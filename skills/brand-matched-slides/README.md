@@ -30,15 +30,17 @@ the repo, so the same skill works for any company.
 The user is guided from Discord for the whole setup. The only step that has to happen
 before Daimon can help is installing the skill, and that is one upload inside Discord.
 
-**Step 1 (the installer, once per server).** Post this in the team channel:
+**Step 1 (the installer, once per server).** Hosted Daimon's built-in agent is read-only, so
+skills always go on an editable copy. One message does the fork, the skill adds and the channel
+routing; the installer only clicks Approve on the two skill cards:
 
 ```
-Branded slides setup
-1. Download the skill: https://github.com/JoshElieson/PyMC/raw/main/dist/brand-matched-slides.zip
-   (optional review loop: https://github.com/JoshElieson/PyMC/raw/main/dist/slide-review.zip)
-2. Run /agent-setup here, choose "add a skill", upload the zip.
-3. Then type: @Daimon set up branded slides
+@Daimon fork Daimon into an editable copy named brand-agent, add both skills from the latest main of https://github.com/JoshElieson/PyMC (folders skills/brand-matched-slides and skills/slide-review), and point this channel at the copy. Yes to all approvals.
 ```
+
+Zips in `dist/` exist for `/agent-setup` uploads, but adding from the repo URL is simpler and
+always current. To update later, repeat the message with "re-add both skills, replacing the
+versions you have".
 
 **Step 2 (anyone, in chat).** `@Daimon set up branded slides` starts Flow 0. Daimon posts a
 checklist and walks the first unfinished item each turn:
