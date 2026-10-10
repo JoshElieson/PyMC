@@ -24,6 +24,8 @@ proposals" footer when this skill is attached.
   background colour, palette (primary and secondary accents, panel colour), text colours,
   display and body fonts with roles, logo bbox and corner, footer text, page-number format
   and position, footer rule, title-slide decoration.
+- `references/style.json` — the same brand mapped into the `slide-review` skill's token
+  schema. Copy it to the working folder as `style.json` when you build a deck.
 - `references/logo.png` — the logo crop, transparent background, 300 dpi.
 - `references/brand_source.pdf` — the company deck the tokens came from, for reference.
 
@@ -84,22 +86,44 @@ footer and logo crop look right, fix `brand.json` by hand if not, and tell the u
 new profile contains. If the script cannot run, do the same with PyMuPDF calls by hand and
 still write `brand.json`.
 
-## Hand-off to the review step
+## Single-slide requests
 
-A companion skill, written by a teammate, reviews the deck this skill produces and checks
-it against the brand profile before it goes to the user. Always leave these artefacts in the
-session output folder with exactly these names:
+If the user asks for one slide, make exactly one content slide: no title slide, no closing
+slide. It still carries the logo, the footer and the page number ("1 / 1"). The finding is
+the slide title; the chart fills the body; a source footnote sits above the footer rule.
 
-- `brand.json` — a copy of the profile actually used for this deck;
-- `brand_swatch.png` and `logo.png`;
-- the rendered deck PDF, plus one PNG per page named `slide_01.png`, `slide_02.png`, ...;
-- `brand_source.pdf` — a copy of the template the profile came from.
+## Fonts
 
-The review skill compares each slide PNG to `brand.json` and the source (background colour,
-fonts, accent usage, logo corner and size, footer text and page numbers, chart styling) and
-reports pass/fail per check with a fix list. If it reports failures, apply the fixes and
-re-render before replying. Do not post a deck the review has flagged as failing on
-background, fonts, logo or footer.
+Georgia and Calibri are not redistributable, so they are not bundled. If either is missing
+in the sandbox, substitute by class and say so in one line of the reply: Georgia -> Playfair
+Display (or Source Serif 4), Calibri -> Inter. Never fall back to a sans-serif for titles.
+
+## Hand-off to the review step (`slide-review` skill)
+
+A companion skill, `slide-review`, lets the user restyle and publish the deck with short
+menu codes. It does **not** redo the analysis, so it needs the deck's source and tokens.
+After every render, leave these files in the working folder (`/root/work`) with exactly
+these names:
+
+- `deck.typ` — the Typst source. All fonts, sizes and colours must come from one `#let`
+  block at the top that reads `style.json`; no literal font names or hex colours inside the
+  slide bodies. Then a global edit changes one token and every slide follows.
+- `style.json` — the review skill's token schema. Start from `references/style.json`
+  (already mapped from the brand profile) and only change `size_name`/`base_size` or
+  `style_preset` if the user asked:
+  `heading_font, body_font, size_name, base_size, scale, scheme_name, bg, text, primary,
+  accent[], style_preset, logo{path,corner,on}, footer{text,on,page_numbers}, slide_size`.
+- `slides.json` — one entry per slide: `title`, `bullets[]`, `notes`, `chart_script` (path
+  to the script that draws that slide's chart; it must read fonts/colours from `style.json`
+  so a restyle re-draws the chart to match).
+- the rendered PDF and one PNG per slide (`slide_01.png`, ...).
+
+Then, in the same turn, **run `slide-review` Step 1**: post one contact-sheet PNG of the
+slides, the current-style line, and the main edit menu exactly as that skill specifies. Do
+not just post the PDF and stop; the review loop is the user's chance to fix anything before
+publishing. When the user later says `✅ publish`, the published file is produced by
+`slide-review` from the current `style.json`, and it must still carry the brand (logo,
+footer, page numbers) unless the user turned those off with menu 7.
 
 ## What good output looks like
 
