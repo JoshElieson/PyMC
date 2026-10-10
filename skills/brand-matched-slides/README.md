@@ -48,12 +48,16 @@ checklist and walks the first unfinished item each turn:
 ```
 Branded slides: setup
 ✅ Skill installed
-⬜ GitHub connected      -> Daimon posts the authorization link; user clicks it, replies "done"
+⬜ GitHub connected      -> two clicks: install the Daimon GitHub app with the repo ticked
+                            (https://github.com/apps/pymc-daimon/installations/new), then
+                            tap Connect GitHub, add the repo, Save; reply "done"
 ⬜ Repo chosen           -> one button: "Create a private repo for me" or name an existing one
 ⬜ Brand set             -> user attaches the company deck; Daimon extracts and stores the brand
 ```
 
-The GitHub authorization link is the only time the user leaves Discord. Daimon creates the
+The GitHub app install and the Connect GitHub page are the only times the user leaves
+Discord. Do the install first: the Connect GitHub page can only list repos the app was already
+given, so without the install it shows "No repos available to add" and searching does nothing. Daimon creates the
 repo, commits the profile, and confirms with the swatch. `@Daimon brand status` shows the
 checklist at any time.
 

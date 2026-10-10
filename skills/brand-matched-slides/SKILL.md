@@ -76,13 +76,27 @@ you cannot do for them is authorize GitHub, and for that you post the link.
    done, re-post the checklist and continue with the next. One step per turn, so the user
    always sees where they are.
 
-2. **GitHub connected.** Start the GitHub connection yourself (connect the GitHub MCP
-   server for this agent). That produces an authorization link for the user; post it with
-   one line: "Click to authorize GitHub, then reply `done`." That is the only time the user
-   leaves Discord, and they come back by replying. If the platform does not let you start
-   the connection, say so and give the in-Discord route: run `/agent-setup`, choose
-   *Connect an MCP server*, pick GitHub, and reply `done` when finished. When they reply,
-   verify the tool is present; if it is not, repeat the link once.
+2. **GitHub connected.** This is two clicks on GitHub, and the order matters. Start the
+   GitHub connection yourself (it produces the Connect GitHub card), and in the same message
+   post these instructions verbatim:
+
+   ```
+   GitHub is two steps:
+   1. Install the Daimon app on your GitHub account and tick the repo for the brand profile
+      (create an empty private repo first if you need one):
+      https://github.com/apps/pymc-daimon/installations/new
+   2. Then tap Connect GitHub below, add that repo, and Save changes.
+   Reply `done` when both are finished.
+   ```
+
+   Step 1 is what makes repos appear in step 2; the Add repos search in step 2 only lists
+   repos the app was already given, so a user who skips step 1 sees "No repos available to
+   add" and cannot type their way out of it. The install link above is the stable one; do
+   not paste a link with a `state=` or `target_id=` parameter, those are single-use. If the
+   platform does not let you start the connection, give the in-Discord route: run
+   `/agent-setup`, choose *Connect an MCP server*, pick GitHub. When the user replies
+   `done`, verify a GitHub tool is present and a repo is connected; if not, repeat the two
+   steps once.
 
 3. **Repo chosen.** On Discord call `post_wizard` with `prompt` = `"Where should the brand
    profile live?"` and one step: key `repo`, kind `choice`, options
