@@ -25,13 +25,39 @@ A: @Daimon this is our new template            -> same as step 1, replaces the p
 The skill ships **no brand**. The profile is created from the user's own deck and stored in
 the repo, so the same skill works for any company.
 
-## Attach (once, in Discord)
+## Setup: one install, then Daimon guides the rest
 
-1. Zip this folder (`SKILL.md` + `scripts/`; `dist/brand-matched-slides.zip` is prebuilt) and add it
-   with `/agent-setup` in the team channel.
-2. Ask Daimon to connect GitHub and bind the team repo (`JoshElieson/PyMC`). If GitHub is not
-   connected, the skill falls back to posting the profile files in Discord and finding them
-   again by search.
+The user is guided from Discord for the whole setup. The only step that has to happen
+before Daimon can help is installing the skill, and that is one upload inside Discord.
+
+**Step 1 (the installer, once per server).** Post this in the team channel:
+
+```
+Branded slides setup
+1. Download the skill: https://github.com/JoshElieson/PyMC/raw/main/dist/brand-matched-slides.zip
+   (optional review loop: https://github.com/JoshElieson/PyMC/raw/main/dist/slide-review.zip)
+2. Run /agent-setup here, choose "add a skill", upload the zip.
+3. Then type: @Daimon set up branded slides
+```
+
+**Step 2 (anyone, in chat).** `@Daimon set up branded slides` starts Flow 0. Daimon posts a
+checklist and walks the first unfinished item each turn:
+
+```
+Branded slides: setup
+✅ Skill installed
+⬜ GitHub connected      -> Daimon posts the authorization link; user clicks it, replies "done"
+⬜ Repo chosen           -> one button: "Create a private repo for me" or name an existing one
+⬜ Brand set             -> user attaches the company deck; Daimon extracts and stores the brand
+```
+
+The GitHub authorization link is the only time the user leaves Discord. Daimon creates the
+repo, commits the profile, and confirms with the swatch. `@Daimon brand status` shows the
+checklist at any time.
+
+If the user declines GitHub, the skill keeps the profile as Discord attachments under a
+`BRAND PROFILE` message and finds it again by search; it still works, but only inside that
+server.
 
 ## Demo script
 

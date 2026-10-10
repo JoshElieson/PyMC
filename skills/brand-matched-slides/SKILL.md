@@ -1,6 +1,6 @@
 ---
 name: brand-matched-slides
-description: Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if nothing is attached. Also use when the user shares a presentation (PDF or PPTX) and calls it their template, brand, style guide or house style, or asks to set, update or refresh the company brand. The brand profile lives in the bound GitHub repo under brand/, is created by this skill from the user's own deck entirely inside Discord, and is applied to every deck in every thread.
+description: Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if nothing is attached. Also use when the user shares a presentation (PDF or PPTX) and calls it their template, brand, style guide or house style, or asks to set, update or refresh the company brand, or asks to set up, get started with, check the status of, or get help with branded slides. The brand profile lives in the bound GitHub repo under brand/, is created by this skill from the user's own deck entirely inside Discord, and is applied to every deck in every thread. Setup is guided step by step in Discord.
 ---
 
 # Brand-matched slides
@@ -40,11 +40,71 @@ This skill ships no brand of its own. The profile is created from the user's dec
 and read back in every later thread (Flow B). `brand.json` is the contract: when it exists,
 do not re-derive the brand by eye from the PDF.
 
-**If GitHub is not connected to this agent**, say so once and tell the user they can connect
-it from Discord (ask you to connect GitHub, or run `/agent-setup`). Until then, use the
-Discord fallback: post the five files as attachments in a message that starts with the line
-`BRAND PROFILE` and, in later threads, find the newest such message with Discord search and
-re-fetch the attachments. Prefer the repo whenever it is available.
+**If GitHub is not connected or no repo is bound**, run Flow 0 (setup) and come back. Only
+if the user declines to connect GitHub use the Discord fallback: post the five files as
+attachments in a message that starts with the line `BRAND PROFILE` and, in later threads,
+find the newest such message with Discord search and re-fetch the attachments. Prefer the
+repo whenever it is available.
+
+## Flow 0: guided setup (first run, "set up", "get started", "status", "help")
+
+Trigger: the user asks to set up, get started, onboard, check status or get help with
+branded slides; or this is the first time the skill is used in this server; or Flow A or B
+finds a missing prerequisite. The user is guided entirely in Discord. You do every step
+you can yourself; the user only clicks, answers a form, or attaches a file. The one thing
+you cannot do for them is authorize GitHub, and for that you post the link.
+
+1. **Check the four prerequisites silently**, then post one checklist message with the
+   state of each, in this order and wording:
+
+   ```
+   Branded slides: setup
+   ✅ Skill installed
+   ⬜ GitHub connected          (needed to remember your brand across threads)
+   ⬜ Repo chosen               (where the brand profile is kept)
+   ⬜ Brand set                 (from your company's deck)
+   ```
+   - *Skill installed* is always ✅ if you are reading this.
+   - *GitHub connected* is ✅ when a GitHub MCP tool is available to you in this session.
+   - *Repo chosen* is ✅ when you know which repo is bound (memory, `/agent-setup` config,
+     or an earlier `brand/` commit you can read).
+   - *Brand set* is ✅ when `brand/brand.json` exists in that repo. Post the stored swatch
+     under the checklist in that case.
+
+   If all four are ✅, say so in one line, remind the user they can just ask for slides in
+   any thread, and stop. Otherwise continue with the **first** ⬜ item only; after it is
+   done, re-post the checklist and continue with the next. One step per turn, so the user
+   always sees where they are.
+
+2. **GitHub connected.** Start the GitHub connection yourself (connect the GitHub MCP
+   server for this agent). That produces an authorization link for the user; post it with
+   one line: "Click to authorize GitHub, then reply `done`." That is the only time the user
+   leaves Discord, and they come back by replying. If the platform does not let you start
+   the connection, say so and give the in-Discord route: run `/agent-setup`, choose
+   *Connect an MCP server*, pick GitHub, and reply `done` when finished. When they reply,
+   verify the tool is present; if it is not, repeat the link once.
+
+3. **Repo chosen.** On Discord call `post_wizard` with `prompt` = `"Where should the brand
+   profile live?"` and one step: key `repo`, kind `choice`, options
+   `create` → `Create a private repo for me (recommended)`,
+   `existing` → `Use a repo I already have` (allow_custom: true, label "owner/name").
+   If `create`: create a private repo named `<server-or-team-name>-brand` on the user's
+   GitHub account, with a one-line README, and bind it. If `existing`: verify you can
+   read and write it; if not, ask for the `owner/name` again or offer `create`. Without
+   `post_wizard`, ask the same question as text with the two options. Remember the
+   choice (memory and `/agent-setup` config) so later threads find it without asking.
+
+4. **Brand set.** Ask the user to attach their company deck (PDF or PPTX) in this thread,
+   one line: "Attach your company's deck (PDF or PPTX) and I'll learn your brand from it."
+   When it arrives, run Flow A. Flow A ends by posting the swatch and summary; then re-post
+   the checklist with all four ✅ and one closing line: "Setup complete. Ask for slides in
+   any thread and they'll come out in your brand. Want a test deck now?"
+
+5. **Status at any time.** `@Daimon brand status` posts the same checklist (plus swatch when
+   the brand is set) without changing anything.
+
+Never ask the user to download, unzip, run or edit anything during setup. Never send them
+to a web page except the GitHub authorization link.
 
 ## Flow A: set or refresh the brand
 
@@ -84,8 +144,9 @@ Trigger: any request for slides, a deck, a presentation or a PDF to present.
    font, background, primary accent, secondary accent, panel colour, text and muted text
    colours, logo corner and relative width, footer text, page-number format and corner,
    title decoration.
-   **If no profile exists anywhere**, ask the user once to attach their company deck
-   (PDF or PPTX), run Flow A, then continue here. Do not fall back to PyMC branding.
+   **If no profile exists anywhere**, run Flow 0 from the first missing step (it ends by
+   asking for the deck and running Flow A), then continue here. Do not fall back to PyMC
+   branding.
 
 2. **Do the analysis as you normally would.** Headline states the finding, one chart per
    slide, uncertainty shown, a source footnote, and a recommendations slide that says the
@@ -161,6 +222,9 @@ footer, page numbers) unless the user turned those off with menu 7.
 
 ## What good output looks like
 
+- Setup is a checklist the user watches fill in: one click to authorize GitHub, one button
+  for the repo, one attachment for the deck. No downloads, no terminal, no web pages other
+  than the GitHub authorization link.
 - Setting the brand takes one message from the user (deck attached) and one reply from you
   (swatch, five-line summary, "stored").
 - Side by side with the company's own deck, a reader should not be able to tell which one
