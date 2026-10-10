@@ -69,3 +69,28 @@ sensible chart type. The weaknesses that actually showed up:
 Candidate pivots for the skill: (a) "always fit the Bayesian version and show it" for
 anything with a point estimate, (b) a Discord-first chart style guide, or (c) a
 "decision brief" output format that is consistent across questions.
+
+## Slide probe (before) — run 2026-10-10 12:19 in the probe 1 thread
+
+Prompt: `@Daimon Turn this analysis into a 5-slide presentation for the CMO and post it here as a PDF.`
+
+Output: `probes/before/slides_before_cmo_deck.pdf`, rendered pages `slide_before_1..5.png`.
+Took 3m40s, $0.45, ~25 tool steps. Typeset with Typst ("PyMC style"); Daimon offered PPTX or Typst source on request.
+
+What Daimon's default deck looks like:
+- **PyMC Labs branding on every deck**: PyMC Labs logo top-left of the title slide, Inter font,
+  navy (#0d1b3e-ish) headlines, teal (#1a9e8a-ish) accent/eyebrow, orange for "uncertain",
+  lavender for baseline, white background, 16:9, footer with source + page number.
+- Slide 5 footer even says "Recommendations are PyMC Labs' proposals", i.e. it assumes the
+  presenter is PyMC Labs, not the user's company.
+- Structure is good: headline-as-finding, 3 KPI tiles, two chart slides with bullets,
+  a solid/uncertain/not-tested slide, a numbered recommendations slide.
+- Charts are re-rendered in the deck palette and match the Discord chart.
+- No way to supply a brand: there is no prompt hint, no template upload path, nothing
+  reads the user's existing slides.
+
+**This is the job for Track 03.** Content and layout are fine; the deck is always *PyMC Labs'*
+deck. A CMO at Meridian Supply Co. would never present it as-is. The skill: given an
+existing deck (PDF/PPTX) from the user's company, extract its brand (fonts, colours,
+background, logo placement, footer conventions) and have Daimon render its deck in that
+brand. Before = PyMC-branded default; after = same content in the client's own look.
