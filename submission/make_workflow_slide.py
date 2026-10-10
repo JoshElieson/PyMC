@@ -10,12 +10,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(__file__).parent
 W, H = 1920, 1080
-BG, PANEL, INK, MUTED = "#0F1117", "#1A1D27", "#F2F4F8", "#9AA3B2"
-CORAL, GOLD, TEAL, VIOLET = "#FF6B4A", "#F2C14E", "#2FBF9F", "#8B7CF6"
+BG, PANEL, INK, MUTED = "#1F1B24", "#2B2633", "#DCE6F2", "#8C8A94"  # Meridian brand tokens
+CORAL, GOLD, TEAL, VIOLET = "#FF6B4A", "#F2C14E", "#DCE6F2", "#8C8A94"
 
 
-def font(size, bold=False):
-    for name in (("segoeuib.ttf" if bold else "segoeui.ttf"), ("arialbd.ttf" if bold else "arial.ttf")):
+def font(size, bold=False, serif=False):
+    names = (("georgiab.ttf" if bold else "georgia.ttf"),) if serif else ()
+    for name in names + (("calibrib.ttf" if bold else "calibri.ttf"), ("arialbd.ttf" if bold else "arial.ttf")):
         try:
             return ImageFont.truetype(name, size)
         except OSError:
@@ -61,7 +62,7 @@ def main():
 
     # header
     d.text((96, 70), "PROPOSED WORKFLOW", fill=CORAL, font=font(26, True))
-    d.text((96, 108), "Your brand, every deck, without re-explaining it", fill=INK, font=font(56, True))
+    d.text((96, 104), "Your brand, every deck, without re-explaining it", fill=INK, font=font(56, True, serif=True))
     d.text((96, 186), "Two Daimon skills: brand-matched-slides (remembers and applies the brand) "
                       "+ slide-review (interactive restyle and publish)", fill=MUTED, font=font(28))
 
@@ -75,7 +76,7 @@ def main():
         d.rounded_rectangle((x, top, x + card_w, top + 10), radius=5, fill=col)
         d.ellipse((x + 32, top + 44, x + 96, top + 108), fill=col)
         d.text((x + 64, top + 76), num, fill=BG, font=font(36, True), anchor="mm")
-        d.text((x + 112, top + 58), title, fill=INK, font=font(29, True))
+        d.text((x + 112, top + 58), title, fill=INK, font=font(29, True, serif=True))
         y = top + 150
         body = font(25)
         for para in lines:
@@ -90,7 +91,7 @@ def main():
             d.polygon([(ax - 10, ay - 16), (ax + 10, ay), (ax - 10, ay + 16)], fill=MUTED)
 
     # footer strip: before / after
-    fy = 905
+    fy = 890
     d.rounded_rectangle((96, fy, W - 96, fy + 110), radius=18, fill=PANEL)
     d.text((128, fy + 22), "Before", fill=MUTED, font=font(24, True))
     d.text((128, fy + 56), "Every thread starts from zero: PyMC Labs style, or re-read the template each time",
@@ -99,13 +100,16 @@ def main():
     d.text((1100, fy + 56), "Brand set once, applied in every thread, reviewed with clicks, published",
            fill=INK, font=font(22))
 
-    d.text((W - 96, H - 36), "Daimon Hackathon 2026 · Track 03 · github.com/JoshElieson/PyMC",
+    d.line((96, H - 60, W - 96, H - 60), fill=CORAL, width=1)
+    d.text((96, H - 36), "Meridian Supply Co.  |  Daimon Hackathon 2026  |  Track 03", fill=MUTED, font=font(20), anchor="lb")
+    d.text((W - 96, H - 36), "github.com/JoshElieson/PyMC", fill=MUTED, font=font(20), anchor="rb")
+    if False: d.text((W - 96, H - 36), "Daimon Hackathon 2026 · Track 03 · github.com/JoshElieson/PyMC",
            fill=MUTED, font=font(20), anchor="rb")
 
-    png = OUT / "workflow_slide.png"
+    png = OUT / "workflow_slide_meridian.png"
     img.save(png)
     pdf = fitz.open(); page = pdf.new_page(width=960, height=540)
-    page.insert_image(page.rect, filename=str(png)); pdf.save(OUT / "workflow_slide.pdf")
+    page.insert_image(page.rect, filename=str(png)); pdf.save(OUT / "workflow_slide_meridian.pdf")
     print("wrote", png, "and workflow_slide.pdf")
 
 
