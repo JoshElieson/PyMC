@@ -1,7 +1,11 @@
 """Extract brand tokens from a PDF slide deck.
 
 Usage:
-    python extract_brand.py deck.pdf [--out brand.json] [--swatch brand_swatch.png] [--logo logo.png]
+    python extract_brand.py deck.pdf [--out brand.json] [--swatch brand_swatch.png] [--logo logo.png] [--summary]
+
+--summary prints a short, chat-ready description of the profile (background, fonts, accent,
+logo, footer) to paste into Discord. Paths written into brand.json are file names only, so
+the file can be committed to a repo without leaking sandbox paths.
 
 Writes brand.json with page size, background, palette, text colours, fonts (display/body
 roles), logo crop, footer text + page-number pattern, and rule lines. Needs PyMuPDF.
@@ -188,7 +192,7 @@ def extract(pdf_path: Path, logo_out: Path | None) -> dict:
             pad = 4
             clip = fitz.Rect(x0 - pad, y0 - pad, x1 + pad, y1 + pad)
             doc[0].get_pixmap(dpi=300, clip=clip, alpha=True).save(logo_out)
-            logo["file"] = str(logo_out)
+            logo["file"] = logo_out.name
 
     # --- title-slide decoration: large accent-coloured drawing on page 1 only
     decoration = None
@@ -201,7 +205,7 @@ def extract(pdf_path: Path, logo_out: Path | None) -> dict:
 
     dark = luminance(background) < 0.5
     return {
-        "source": str(pdf_path), "pages": n_pages,
+        "source": pdf_path.name, "pages": n_pages,
         "page_size_points": [round(W, 1), round(H, 1)], "aspect": f"{W / H:.3f}:1",
         "background": background, "dark_theme": dark,
         "palette": [{"hex": c, "area_share": a} for c, a in palette],
@@ -239,18 +243,40 @@ def swatch(brand: dict, out: Path):
     pg.get_pixmap(dpi=96).save(out)
 
 
+def summary(brand: dict) -> str:
+    """Five chat-ready lines describing the profile, for posting in Discord."""
+    accent = next((p["hex"] for p in brand["palette"] if p["hex"] != brand["background"]), None)
+    text = brand["text_colors"][0]["hex"] if brand["text_colors"] else None
+    lg, f = brand["logo"], brand["footer"]
+    theme = "dark" if brand["dark_theme"] else "light"
+    lines = [
+        f"Background {brand['background']} ({theme}), text {text}, primary accent {accent}",
+        f"Fonts: {brand['roles']['display']} for titles, {brand['roles']['body']} for body",
+        (f"Logo: {lg['corner']}, {lg['relative_width']:.0%} of slide width" if lg else "Logo: none found"),
+        f"Footer: {f['text']!r}" if f["text"] else "Footer: none found",
+        (f"Page numbers: {f['page_number_format']} at {f['page_number_position']}"
+         if f["page_number_format"] else "Page numbers: none found"),
+    ]
+    return "
+".join(lines)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("pdf", type=Path)
     ap.add_argument("--out", type=Path, default=Path("brand.json"))
     ap.add_argument("--swatch", type=Path, default=None)
     ap.add_argument("--logo", type=Path, default=Path("logo.png"))
+    ap.add_argument("--summary", action="store_true", help="print a chat-ready summary instead of raw JSON")
     a = ap.parse_args()
     brand = extract(a.pdf, a.logo)
     a.out.write_text(json.dumps(brand, indent=2), encoding="utf-8")
     if a.swatch:
         swatch(brand, a.swatch)
-    print(json.dumps({k: brand[k] for k in ("background", "roles", "footer", "logo")}, indent=2))
+    if a.summary:
+        print(summary(brand))
+    else:
+        print(json.dumps({k: brand[k] for k in ("background", "roles", "footer", "logo")}, indent=2))
     print("wrote", a.out)
 
 
