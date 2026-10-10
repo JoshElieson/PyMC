@@ -22,7 +22,20 @@ The deck-building skill should leave `deck.typ` and `style.json` in the session
 (see `example_style.json` for the token schema). If `style.json` is missing,
 slide-review creates it from `deck.typ` first.
 
-## Demo script
+## Demo script (Discord, interactive)
+
+On Discord the review round is a `post_wizard` form with buttons and a dropdown, so the demo
+is click-driven:
+
+1. Daimon posts the contact sheet + current-style line, then the "Edit your deck" form.
+2. Click through: Font → Keep · Size → **L** · Colour → Template · Style → Corporate ·
+   Logo & footer → all ticked · Text → `1 title: Search returns $3 per $1; display cannot be told from zero`
+   · Action → **Apply and preview** → Submit.
+3. Daimon echoes `✔ Size → L · ✔ Slide 1 title updated`, re-renders, posts a new sheet + form.
+4. Next form: leave everything, Action → **↩ Undo last round** → Submit. Title reverts.
+5. Next form: Action → **✅ Publish PDF** → Submit. Final PDF + `style.json` attached.
+
+## Demo script (typed codes, fallback)
 
 In a thread where Daimon just made a deck (e.g. the probe 1 thread,
 `probes/before/slides_before_cmo_deck.pdf`):

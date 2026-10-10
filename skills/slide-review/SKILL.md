@@ -23,7 +23,46 @@ If `style.json` is missing, first create it by moving every hard-coded font, siz
 colour in `deck.typ` into one `#let` block that reads `style.json`. After that, each global
 edit changes exactly one token and applies to every slide.
 
-## Step 1: Post the review message
+## On Discord: use the `post_wizard` tool, not typed codes
+
+Discord has real buttons and dropdowns, and the agent can post them with the `post_wizard`
+tool (multi-step form; `choice` renders as buttons, `multi` as a dropdown select, `text` as a
+free-text box; the user gets Back / Next / Submit and the answers come back to you as one
+message). On Discord, **every review round is one wizard**, and the typed-code menus below
+are the fallback for platforms without `post_wizard` (Slack) or if the tool errors.
+
+Round shape on Discord:
+
+1. Post the contact sheet PNG and the current-style line as a normal message (the wizard
+   cannot carry an arbitrary PNG; only image-generation handles).
+2. Call `post_wizard` with `prompt` = `"Edit your deck"` and these steps, in this order.
+   Mark the current value in each label with `◉`; keep every label under 80 characters;
+   use `allow_custom: false` except where noted. Do not add steps beyond these seven.
+
+   | key | kind | question | options (value → label) |
+   |---|---|---|---|
+   | `font` | choice | Font | `keep` → `◉ Keep template (Georgia / Calibri)`, `serif` → `Serif: Playfair Display / Source Serif 4`, `sans` → `Clean sans: Inter / Inter`, `modern` → `Modern: Montserrat / Open Sans`, `mono` → `Mono accents: IBM Plex Sans / Plex Mono numbers` (allow_custom: true, for "heading / body") |
+   | `size` | choice | Font size | `S` → `S  body 16pt (dense)`, `M` → `◉ M  body 20pt (default)`, `L` → `L  body 24pt (on a screen)`, `XL` → `XL body 28pt (big room)` |
+   | `scheme` | choice | Colour scheme | `template` → `◉ Template (extracted from your deck)`, `light` → `Light: white bg, template primary accent`, `dark` → `Dark: deep bg, light text`, `contrast` → `High-contrast: black/white + one accent`, `mono` → `Monochrome: shades of primary` (allow_custom: true, for "#bg #primary [#accent]") |
+   | `style` | choice | Style | `corporate` → `◉ Corporate`, `minimal` → `Minimal`, `bold` → `Bold`, `dense` → `Data-dense`, `playful` → `Playful` |
+   | `chrome` | multi | Logo & footer (tick what should be ON) | `logo` → `Logo`, `footer` → `Footer text`, `pages` → `Page numbers` (min 0, max 3; pre-select by naming the current ON ones first in the question, e.g. "currently: Logo, Footer, Pages") |
+   | `text` | text | Slide text edits, one per line, or leave blank | e.g. `1 title: ...` / `2 bullet 3: ...` / `2 add bullet: ...` / `2 drop bullet 3` |
+   | `action` | choice | What next? | `preview` → `Apply and preview`, `publish_pdf` → `✅ Publish PDF`, `publish_pptx` → `📎 Publish PPTX`, `undo` → `↩ Undo last round` |
+
+3. End your turn immediately after `post_wizard` returns (it tells you to). The answers
+   arrive as the next message. Parse them exactly like the typed codes: `font`, `size`,
+   `scheme`, `style` map to menus 1–4; `chrome` maps to menu 7 (anything not ticked is OFF);
+   each line of `text` maps to menu 5; `action` decides whether to re-render and post a new
+   round (`preview`), publish (Step 5), or restore the previous version (`undo`) and post a
+   new round.
+4. Unchanged answers (the user just clicked Next through a step) must not count as edits.
+   Compare each answer to the current `style.json` and only echo real changes:
+   `✔ Size → L · ✔ Slide 1 title updated`. If nothing changed and action is `preview`,
+   re-post the current sheet with "No changes" and a fresh wizard.
+5. A wizard round that fails validation (label too long, too many options) is a bug in the
+   labels; shorten and retry once, then fall back to the typed menu for that round.
+
+## Step 1: Post the review message (typed-code fallback)
 
 Always post one message, in this order:
 1. One contact-sheet PNG of all slides in a grid, numbered, sized for an inline Discord

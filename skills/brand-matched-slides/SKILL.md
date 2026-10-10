@@ -151,10 +151,11 @@ these names:
   profile, so the reviewer can check the deck against the source;
 - the rendered PDF and one PNG per slide (`slide_01.png`, ...).
 
-Then, in the same turn, **run `slide-review` Step 1**: post one contact-sheet PNG of the
-slides, the current-style line, and the main edit menu exactly as that skill specifies. Do
-not just post the PDF and stop; the review loop is the user's chance to fix anything before
-publishing. When the user later says `✅ publish`, the published file is produced by
+Then, in the same turn, **start the `slide-review` round**: post one contact-sheet PNG of
+the slides and the current-style line, then (on Discord) call `post_wizard` with the
+seven-step "Edit your deck" form that skill specifies, and end your turn. On platforms
+without `post_wizard`, post the typed-code menu instead. Do not just post the PDF and stop;
+the review loop is the user's chance to fix anything before publishing. When the user later says `✅ publish`, the published file is produced by
 `slide-review` from the current `style.json`, and it must still carry the brand (logo,
 footer, page numbers) unless the user turned those off with menu 7.
 
