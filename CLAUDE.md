@@ -142,8 +142,36 @@ name, members, and track in `#hackathon-team-registration`.
 > case; technical depth; communication; reproducibility. Teams are 2 to 6 people.
 > `/billing` in Discord shows your team's budget.
 
+### Our project direction: visual communication of Bayesian results
+
+**Hypothesis:** Daimon's charts are correct but communicate badly. Likely failure modes
+(to be confirmed with probes): point estimates without credible intervals, forecasts as
+a single line instead of a fan chart, ArviZ diagnostic plots sent to non-technical
+audiences, unsorted/crammed group comparisons, missing titles/units, fonts too small
+for Discord. This is a weakness that appears in every thread, so a fix has broad impact.
+
+**Method:**
+1. Run the five probe prompts in `probes/PROBES.md` with the synthetic CSVs from
+   `probes/make_probe_data.py`. Screenshot each chart. These are the **before** shots.
+2. Fill the scoring table. Choose the weakness that fails most consistently.
+3. Fix via the allowed methods, in order of preference:
+   - **Skill first.** A short instruction file: when to use which chart, always show
+     uncertainty as a band or interval, title states the finding, label units, sort
+     groups by estimate, one chart per question, Discord-legible sizing (e.g. 10x6 in,
+     ≥14 pt fonts, 150 dpi), colorblind-safe palette, never post diagnostic plots
+     unless asked.
+   - **MCP server only if it earns its place.** Candidates: a `render_chart` tool that
+     takes tidy data + chart spec and returns a styled PNG so output is consistent every
+     time; or a `critique_chart` tool that checks a PNG for font size, missing axes
+     labels, missing intervals and returns a fix list.
+4. Re-run the same probes with the skill attached. These are the **after** shots.
+5. Slides: job in one sentence, before, what we built, after, repo link.
+
+**Candidate job statement:** "Make every chart Daimon posts show its uncertainty and
+be readable by a decision-maker on the first look."
+
 **Working plan for Track 03 (update as decisions are made):**
-- [ ] Choose the job. Must be concrete, something Daimon visibly does badly today, and demoable in a screenshot.
+- [ ] Choose the job. Must be concrete, something Daimon visibly does badly today, and demoable in a screenshot. **Current candidate: chart communication (above).**
 - [ ] Capture the **before** screenshot early, before any skill is attached.
 - [ ] Write the skill file: steps, what to check, what good output looks like. Keep it short.
 - [ ] Decide whether an MCP server adds real value. If yes, start from the template in `track3-template/` and run `uv run serve.py`.
