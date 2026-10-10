@@ -7,7 +7,8 @@ Discord, then publish the final PDF/PPTX.
 This is the second half of the workflow:
 
 ```
-A: I want slides → D: asks for template → A: uploads template → D: extracts brand, makes slides
+A: uploads template once ("this is our brand") → D: extracts brand, commits brand/ to the repo
+A (any later thread): I want slides → D: reads brand/ from the repo, makes slides
 → [slide-review] D: sends for review → A: edits with menu codes → A: publish → D: publishes
 ```
 

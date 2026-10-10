@@ -1,7 +1,11 @@
 """Extract brand tokens from a PDF slide deck.
 
 Usage:
-    python extract_brand.py deck.pdf [--out brand.json] [--swatch brand_swatch.png] [--logo logo.png] [--summary]
+    python extract_brand.py deck.pdf [--out brand.json] [--swatch brand_swatch.png] [--logo logo.png]
+                            [--style style.json] [--summary]
+
+--style writes the same brand mapped into the slide-review skill's token schema
+(heading_font, body_font, bg, text, primary, accent[], logo, footer, ...).
 
 --summary prints a short, chat-ready description of the profile (background, fonts, accent,
 logo, footer) to paste into Discord. Paths written into brand.json are file names only, so
@@ -47,6 +51,12 @@ def quantize(h: str, step: int = 8) -> str:
     r, g, b = int(h[1:3], 16), int(h[3:5], 16), int(h[5:7], 16)
     q = lambda v: min(255, (v // step) * step + step // 2)
     return f"#{q(r):02X}{q(g):02X}{q(b):02X}"
+
+
+def saturation(h: str) -> float:
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    mx, mn = max(r, g, b), min(r, g, b)
+    return 0.0 if mx == 0 else (mx - mn) / mx
 
 
 def luminance(h: str) -> float:
@@ -204,20 +214,32 @@ def extract(pdf_path: Path, logo_out: Path | None) -> dict:
             break
 
     dark = luminance(background) < 0.5
+    # roles for the palette: the accent is the most saturated colour that is not the
+    # background; the panel colour is the one closest in luminance to the background.
+    pal_hex = [c for c, _ in palette]
+    primary_accent = max(pal_hex, key=saturation, default=None)
+    panel = min((c for c in pal_hex if c != primary_accent),
+                key=lambda c: abs(luminance(c) - luminance(background)), default=None)
+    secondary_accent = next((c for c, _ in text_colors if c not in (primary_accent, background)
+                             and saturation(c) > 0.4), None)
     return {
         "source": pdf_path.name, "pages": n_pages,
         "page_size_points": [round(W, 1), round(H, 1)], "aspect": f"{W / H:.3f}:1",
         "background": background, "dark_theme": dark,
         "palette": [{"hex": c, "area_share": a} for c, a in palette],
         "text_colors": [{"hex": c, "chars": n} for c, n in text_colors],
-        "fonts": fonts, "roles": {"display": display, "body": body},
+        "fonts": fonts,
+        "roles": {"display": display, "body": body, "primary_accent": primary_accent,
+                  "secondary_accent": secondary_accent, "panel": panel,
+                  "text": text_colors[0][0] if text_colors else None,
+                  "muted_text": text_colors[1][0] if len(text_colors) > 1 else None},
         "logo": logo,
         "footer": {"text": footer_text, "page_number_format": page_fmt, "page_number_position": page_pos, "rule": footer_rule},
         "title_decoration": decoration,
     }
 
 
-def swatch(brand: dict, out: Path):
+def swatch(brand: dict, out: Path, logo_path: Path | None = None):
     """One-image summary so the agent (or a human) can eyeball the extraction."""
     W, H = 900, 420
     doc = fitz.open(); pg = doc.new_page(width=W, height=H)
@@ -238,15 +260,47 @@ def swatch(brand: dict, out: Path):
     pg.insert_text((24, 350), f"page numbers: {f['page_number_format']} at {f['page_number_position']}   rule: {f['rule']}", fontsize=10, color=tcol)
     lg = brand["logo"]
     pg.insert_text((24, 380), f"logo: {lg and lg['kind']} at {lg and lg['corner']}, width {lg and lg['relative_width']}", fontsize=10, color=tcol)
-    if lg and lg.get("file") and Path(lg["file"]).exists():
-        pg.insert_image(fitz.Rect(W - 260, 60, W - 24, 160), filename=lg["file"])
+    if lg and logo_path and logo_path.exists():
+        pg.insert_image(fitz.Rect(W - 260, 60, W - 24, 160), filename=str(logo_path))
     pg.get_pixmap(dpi=96).save(out)
+
+
+def family(font_name: str | None) -> str | None:
+    """'Georgia-Bold' -> 'Georgia', 'Calibri,Italic' -> 'Calibri'."""
+    if not font_name:
+        return None
+    return re.split(r"[-,]", font_name)[0].replace("MT", "").strip() or font_name
+
+
+CORNER = {"top-left": "tl", "top-right": "tr", "top-center": "tl", "bottom-left": "bl", "bottom-right": "br"}
+
+
+def style_tokens(brand: dict, logo_name: str = "logo.png") -> dict:
+    """Map brand.json to the slide-review skill's style.json schema."""
+    r, f, lg, deco = brand["roles"], brand["footer"], brand["logo"], brand["title_decoration"]
+    accents = [c for c in (r["secondary_accent"], r["muted_text"]) if c]
+    primary = r["primary_accent"] or r["text"]
+    return {
+        "heading_font": family(r["display"]), "body_font": family(r["body"]),
+        "size_name": "M", "base_size": 20, "scale": 1.25,
+        "scheme_name": "Template", "bg": brand["background"], "text": r["text"],
+        "primary": primary, "accent": accents, "panel": r["panel"],
+        "style_preset": "Corporate",
+        "logo": {"path": logo_name, "corner": CORNER.get(lg["corner"], "tl") if lg else "tl", "on": bool(lg)},
+        "footer": {"text": f["text"] or "", "on": bool(f["text"]), "page_numbers": bool(f["page_number_format"]),
+                   "page_number_format": f["page_number_format"],
+                   "rule_color": f["rule"]["color"] if f["rule"] else None},
+        "title_decoration": ({"shape": deco["shape"], "color": deco["color"],
+                              "side": "right" if deco["bbox_points"][0] > brand["page_size_points"][0] / 2 else "left"}
+                             if deco else None),
+        "slide_size": "16:9" if abs(brand["page_size_points"][0] / brand["page_size_points"][1] - 16 / 9) < 0.02 else "4:3",
+        "_source": f"Derived from brand.json (extracted from {brand['source']}). brand.json is the source of truth.",
+    }
 
 
 def summary(brand: dict) -> str:
     """Five chat-ready lines describing the profile, for posting in Discord."""
-    accent = next((p["hex"] for p in brand["palette"] if p["hex"] != brand["background"]), None)
-    text = brand["text_colors"][0]["hex"] if brand["text_colors"] else None
+    accent, text = brand["roles"]["primary_accent"], brand["roles"]["text"]
     lg, f = brand["logo"], brand["footer"]
     theme = "dark" if brand["dark_theme"] else "light"
     lines = [
@@ -257,22 +311,27 @@ def summary(brand: dict) -> str:
         (f"Page numbers: {f['page_number_format']} at {f['page_number_position']}"
          if f["page_number_format"] else "Page numbers: none found"),
     ]
-    return "
-".join(lines)
+    return chr(10).join(lines)
 
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")  # footers often contain non-ASCII dashes
     ap = argparse.ArgumentParser()
     ap.add_argument("pdf", type=Path)
     ap.add_argument("--out", type=Path, default=Path("brand.json"))
     ap.add_argument("--swatch", type=Path, default=None)
     ap.add_argument("--logo", type=Path, default=Path("logo.png"))
+    ap.add_argument("--style", type=Path, default=None, help="also write style.json for the slide-review skill")
     ap.add_argument("--summary", action="store_true", help="print a chat-ready summary instead of raw JSON")
     a = ap.parse_args()
     brand = extract(a.pdf, a.logo)
     a.out.write_text(json.dumps(brand, indent=2), encoding="utf-8")
     if a.swatch:
-        swatch(brand, a.swatch)
+        swatch(brand, a.swatch, a.logo)
+    if a.style:
+        a.style.write_text(json.dumps(style_tokens(brand, a.logo.name), indent=2), encoding="utf-8")
+        print("wrote", a.style)
     if a.summary:
         print(summary(brand))
     else:

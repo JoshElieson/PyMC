@@ -1,0 +1,36 @@
+{
+  "heading_font": "Georgia",
+  "body_font": "Calibri",
+  "size_name": "M",
+  "base_size": 20,
+  "scale": 1.25,
+  "scheme_name": "Template",
+  "bg": "#1F1B24",
+  "text": "#DCE6F2",
+  "primary": "#FF6B4A",
+  "accent": [
+    "#F2C14E",
+    "#8C8A94"
+  ],
+  "panel": "#2B2633",
+  "style_preset": "Corporate",
+  "logo": {
+    "path": "logo.png",
+    "corner": "tl",
+    "on": true
+  },
+  "footer": {
+    "text": "Meridian Supply Co.  |  Confidential \u2010 Board use only  |  Q2 2026 Board Review",
+    "on": true,
+    "page_numbers": true,
+    "page_number_format": "n / N",
+    "rule_color": "#FF6B4A"
+  },
+  "title_decoration": {
+    "shape": "block",
+    "color": "#FF6B4A",
+    "side": "right"
+  },
+  "slide_size": "16:9",
+  "_source": "Derived from brand.json (extracted from meridian_board_deck.pdf). brand.json is the source of truth."
+}

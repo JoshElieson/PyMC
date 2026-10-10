@@ -157,7 +157,10 @@ re-fetch it across threads via Discord search. The remaining gap is a company wh
 was never posted in the server, plus fidelity (footer rewording, content leakage), cost/time,
 and having a checkable contract. **After-runs must be done in a channel where the template
 was never shared.** See `probes/PROBES.md` for the evidence. The skill therefore ships the brand profile
-(`brand.json` + `logo.png`, generated once from the company PDF with `extract_brand.py`).
+(`brand.json` + `logo.png`), created **inside Discord**: the user attaches their deck once, Daimon
+runs `scripts/extract_brand.py` in its sandbox and commits the profile to `brand/` in the bound
+GitHub repo (`brand.json`, `style.json`, `logo.png`, `brand_swatch.png`, `brand_source.pdf`); every later thread
+reads it back. The skill itself ships no brand (decided 13:20; the user must never leave Discord).
 
 **Why this wins on the judging criteria:** the before/after contrast is stark and visual
 (PyMC-branded vs client-branded, same content); the use case is concrete (every analyst
@@ -166,15 +169,17 @@ brand extraction (PDF/PPTX parsing, font + colour detection, logo cropping); rep
 because the skill + a sample "brand source" deck can be re-run by the judges.
 
 **Build plan:**
-1. Before shots: done. `probes/before/slide_before_1..5.png` + the PDF.
+1. Before shots: done. `probes/before/slide_before_1..5.png` + the PDF, and the before video
+   in `probes/before_video/`.
 2. Create a sample "company" deck with a distinct brand (dark background, serif display
    font, different accent colours, a fake logo) to act as the brand source. Put it in
    `brand_sources/`.
-3. Write the skill `skills/brand-matched-slides/SKILL.md`: when asked for slides, look for
-   an attached or previously shared deck; extract brand tokens (primary/secondary/accent
-   colours as hex, background colour, heading + body fonts, logo image + position, footer
-   pattern, slide size); write them to `brand.json`; render the deck with those tokens
-   (Typst or python-pptx); show a one-slide swatch for confirmation if anything is ambiguous.
+3. Skill `skills/brand-matched-slides/SKILL.md` (done, Discord-only): Flow A, user attaches
+   their deck and calls it the template; Daimon extracts tokens with the shipped script, posts
+   swatch + 5-line summary, commits `brand/` to the bound repo. Flow B, any deck request reads
+   `brand/brand.json` + `logo.png` from the repo and renders with those tokens; if no profile
+   exists it asks for the deck once. Fallback when GitHub is not connected: post the files in
+   Discord under a `BRAND PROFILE` heading and find them by search later.
 4. **Review skill (teammate-owned):** a second skill reviews the rendered deck against
    `brand.json` and the source PDF and returns pass/fail per check. The hand-off contract
    (file names it expects) is in `skills/brand-matched-slides/SKILL.md`. Keep that
@@ -182,8 +187,10 @@ because the skill + a sample "brand source" deck can be re-run by the judges.
 5. Optional MCP server: `extract_brand(pdf_or_pptx) -> brand.json` tool so the heavy
    parsing is deterministic (PyMuPDF for fonts/colours/images, python-pptx for theme XML).
    Only build if the skill alone can't get Daimon to extract reliably.
-6. After shots: attach via `/agent-setup`, re-run the same "5-slide presentation for the
-   CMO" prompt with the brand-source deck attached, render pages, compare side by side.
+6. After shots: attach via `/agent-setup`, connect GitHub in chat, set the brand from
+   `meridian_board_deck.pdf` in one thread, then in a fresh thread with nothing attached
+   re-run the before-video prompt; render pages, compare side by side. Must run in a
+   server/channel where the Meridian deck was never posted before.
 7. Slides for submission: job sentence, before (PyMC-branded slide 1), what we built,
    after (client-branded slide 1), repo link.
 

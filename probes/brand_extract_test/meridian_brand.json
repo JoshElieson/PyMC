@@ -1,5 +1,5 @@
 {
-  "source": "..\\..\\..\\brand_sources\\meridian_board_deck.pdf",
+  "source": "meridian_board_deck.pdf",
   "pages": 4,
   "page_size_points": [
     960.0,
@@ -80,7 +80,12 @@
   ],
   "roles": {
     "display": "Georgia-Bold",
-    "body": "Calibri"
+    "body": "Calibri",
+    "primary_accent": "#FF6B4A",
+    "secondary_accent": "#F2C14E",
+    "panel": "#2B2633",
+    "text": "#DCE6F2",
+    "muted_text": "#8C8A94"
   },
   "logo": {
     "kind": "vector+text",
