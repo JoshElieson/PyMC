@@ -131,3 +131,25 @@ before. Next probe = the realistic workflow: share the template in a thread with
 message, then ask for the deck in a later message without mentioning style. If Daimon
 reverts to PyMC branding there, that is the before, and the skill's job is "apply the
 company brand every time a template has been shared, without being told".
+
+## Workflow probe (before, no skill) — 2026-10-10 12:48-12:52, thread "Meridian board deck template"
+
+Step 1: template PDF shared with "for reference, just confirm you have it". Daimon: confirmed,
+12s, $0.08, said it would study layout/colours/fonts/logo once the data arrived.
+Step 2 (same thread): CSV + "which channels drove revenue? 5-slide PDF deck for our CMO", no
+mention of style. Daimon: 2m36s, $0.32, "I matched the template by reading its exact colours,
+fonts and layout" (dark background, coral/yellow logo bars, Georgia titles, Calibri body,
+stat card, footer). Output `meridian_cmo_channel_deck.pdf` (not downloaded; same claim as the
+verified 12:39 run).
+
+**Conclusion: within a thread, Daimon already brand-matches, prompted or not.** The gap is
+across threads: a template shared in one thread does not exist in the next. That is exactly
+the brief's framing ("every new Daimon thread starts from zero").
+
+**Final job statement:** "Give Daimon our company's brand permanently, so every deck in every
+thread comes out in our template without anyone attaching it." The skill carries
+`brand.json` + `logo.png` (generated once from the company's PDF with `extract_brand.py`) and
+instructs Daimon to render all decks with them.
+- **Before:** fresh thread, no attachment, "make a 5-slide deck" -> PyMC Labs-branded
+  (`probes/before/slide_before_*.png`, already captured 12:19).
+- **After:** fresh thread, no attachment, skill attached, same ask -> Meridian-branded.

@@ -150,9 +150,11 @@ good too, but **every deck is rendered in PyMC Labs' own brand**: PyMC Labs logo
 font, navy/teal/orange palette, white background, footer saying the recommendations are
 "PyMC Labs' proposals". There is no way to give Daimon the user's own brand.
 
-**Job statement:** "Make Daimon's decks look like *our* company's decks: parse fonts,
-colours, background, logo and footer conventions from an existing presentation and render
-the new deck in that style."
+**Job statement (revised 12:55 after probes):** "Give Daimon our company's brand permanently,
+so every deck in every thread comes out in our template without anyone attaching it."
+Probes showed Daimon already matches a template *within* a thread (prompted or not); the gap
+is that nothing carries across threads. The skill therefore ships the brand profile
+(`brand.json` + `logo.png`, generated once from the company PDF with `extract_brand.py`).
 
 **Why this wins on the judging criteria:** the before/after contrast is stark and visual
 (PyMC-branded vs client-branded, same content); the use case is concrete (every analyst

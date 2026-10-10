@@ -1,99 +1,110 @@
 ---
 name: brand-matched-slides
-description: When asked for slides, a deck, or a presentation, and the user has shared a PDF of one of their own presentations (now or earlier in the thread), extract that deck's brand (colours, fonts, background, logo, footer, page numbers) and render the new deck in that brand instead of the default PyMC Labs style. Also use when the user says "match our template", "in our style", "use our branding", or "like this deck".
+description: Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if no template is attached. This skill carries the company's brand profile (brand/brand.json, brand/logo.png, extracted from the company's own deck) and tells you how to render every deck in that brand instead of the default PyMC Labs style. Also use when the user shares a new presentation PDF and says it is their template, so the profile can be refreshed.
 ---
 
 # Brand-matched slides
 
-Every deck you make should look like it came from the **user's** company, not from PyMC Labs.
-If the user has given you a PDF of their own slides, that PDF is the brand source. Parse it,
-write down what you found, and build the new deck with those tokens. Do not use the PyMC
-Labs logo, palette, or "PyMC Labs' proposals" footer when a brand source exists.
+Every new thread starts from zero, so without this skill you would brand every deck as
+PyMC Labs. The company this agent works for is not PyMC Labs. Their brand lives in this
+skill's `brand/` folder and applies to **every deck you make, in every thread, whether or
+not anyone attaches a template**. Never use the PyMC Labs logo, palette or "PyMC Labs'
+proposals" footer when this skill is attached.
 
-## Steps
+## The brand profile
 
-1. **Find the brand source.** Look for a PDF attached to this message or earlier in the
-   thread whose name or content looks like a presentation (slides, deck, board review,
-   template, 16:9 pages). If there are several, prefer the one the user called a template.
-   If there is none and the user asked to match a style, ask for the PDF once, then proceed
-   with the default style if they do not have one.
+- `brand/brand.json` — tokens extracted from the company's deck: page size and aspect,
+  background colour, palette (primary and secondary accents, panel colour), text colours,
+  display and body fonts with roles, logo bbox and corner, footer text, page-number format
+  and position, footer rule, title-slide decoration.
+- `brand/logo.png` — the logo crop, transparent background, 300 dpi.
+- `brand/brand_source.pdf` — the company deck the tokens came from, for reference.
 
-2. **Extract brand tokens with code, not by eye.** Run `extract_brand.py` from this skill's
-   folder against the PDF (it needs PyMuPDF; `pip install pymupdf` if missing):
+Read `brand/brand.json` at the start of any slide task. Do not re-derive the brand by eye
+from the source PDF when the JSON exists; the JSON is the contract.
 
-   ```
-   python extract_brand.py path/to/deck.pdf --out brand.json --swatch brand_swatch.png
-   ```
+## Steps for any deck request
 
-   It writes `brand.json` with: page size and aspect; background colour (dominant pixel
-   colour per page); up to six palette colours ranked by area, with the background excluded;
-   text colours ranked by character count; font names with role guesses (display = largest
-   median size, body = most characters); the logo (largest image or vector group in the top
-   10% of the page that repeats on most pages, cropped to `logo.png`); the footer (text
-   that repeats in the bottom 10% of every page, with any page-number pattern such as
-   `n / N` or `Page n` separated out); and any rule lines near the footer. If the script
-   cannot run, do the same by hand with PyMuPDF (`page.get_text("dict")` for fonts, colours
-   and positions; `page.get_pixmap()` for background sampling) and still write `brand.json`.
+1. **Load the profile.** Read `brand/brand.json`. Note the display font, body font,
+   background, primary accent, secondary accent, text colour, muted text colour, logo corner
+   and relative width, footer text, page-number format and corner, and the title decoration.
 
-3. **Sanity-check the tokens before using them.** Open `brand_swatch.png` and look at it.
-   Check that: background and text colours have enough contrast; the display font is a real
-   font name, not `Helvetica` left over from a fallback; the footer text is the repeated
-   company line, not a slide title; the logo crop is the logo and not a chart. If anything
-   looks wrong, fix `brand.json` by hand and say what you changed.
+2. **Do the analysis as you normally would.** Headline states the finding, one chart per
+   slide, uncertainty shown, a source footnote, and a recommendations slide that says the
+   recommendations are the analyst's proposals, not model outputs. Branding changes the look,
+   not the substance.
 
-4. **Build the deck from `brand.json`.** Whatever renderer you use (Typst, python-pptx,
-   reportlab, matplotlib pages), the deck must take every visual decision from the tokens:
-   - page size and aspect from the source;
-   - background colour on every slide; if the source has a decorative shape on the title
-     slide (band, block, diagonal), reproduce a similar shape in the primary accent colour;
-   - display font for titles and KPI numbers, body font for everything else; if the exact
-     font is not installed, pick the closest installed font of the same class (serif to
-     serif, sans to sans) and say so in your reply;
-   - primary accent for emphasis, rules, bullet markers and KPI numbers; secondary accent
-     for eyebrows and labels; text and muted-text colours as extracted;
-   - the logo image in the same corner and at the same relative size on every slide;
-   - the footer line verbatim in the same position, and page numbers in the same format and
-     corner. Replace the date or event in the footer only if the user asks;
-   - charts restyled to the palette: background transparent or equal to the slide
-     background, text in the text colour, series in accent colours. Never paste a chart with
-     a white background onto a dark slide.
+3. **Render the deck from the tokens.** Whatever renderer you use (Typst, python-pptx,
+   reportlab, matplotlib pages), every visual decision comes from `brand.json`:
+   - page size and aspect from the profile;
+   - background colour on every slide; reproduce the title-slide decoration (e.g. a diagonal
+     band) in the primary accent;
+   - display font for titles and KPI numbers, body font for everything else. If the exact
+     font is not installed, use the closest installed font of the same class (serif to serif,
+     sans to sans) and say so in your reply;
+   - primary accent for rules, bullet markers and KPI numbers; secondary accent for eyebrows
+     and labels; text and muted-text colours as given;
+   - `brand/logo.png` in the same corner at the same relative width on every slide;
+   - the footer text **verbatim**, same position, and page numbers in the same format and
+     corner. Do not reword the footer. If the footer carries an event name or date that is
+     clearly wrong for this deck, keep it and tell the user they may want to change it;
+   - charts restyled to the palette: transparent or slide-coloured background, text in the
+     text colour, series in the accent colours. Never a white chart on a dark slide.
 
-5. **Keep the content rules you already follow.** Headline states the finding, one chart per
-   slide, uncertainty shown, source footnote, a recommendations slide that says the
-   recommendations are the analyst's proposals, not model outputs. Branding changes the
-   look, not the substance.
+4. **Keep template content out.** The brand source is a style reference only. Never carry
+   its numbers, proposals, bullet text or titles into the new deck.
 
-6. **Deliver.** Post the PDF, the `brand.json`, and `brand_swatch.png` in the thread. In one
-   short paragraph say which brand source you used, the fonts and colours you applied, and
-   any substitutions. Offer the PPTX or source on request.
+5. **Write the review artefacts** (see hand-off below), then deliver: post the PDF and say in
+   one short paragraph that the deck uses the company brand profile, which fonts and colours
+   were applied, and any font substitution. Offer PPTX or source on request.
+
+## Refreshing the profile from a new template
+
+If the user shares a presentation PDF and calls it their template, brand, or style guide,
+regenerate the profile instead of guessing:
+
+```
+python extract_brand.py path/to/template.pdf --out brand/brand.json --swatch brand/brand_swatch.png --logo brand/logo.png
+cp path/to/template.pdf brand/brand_source.pdf
+```
+
+`extract_brand.py` needs PyMuPDF (`pip install pymupdf`). It samples pixels for the
+background and palette, snaps them to exact vector colours, reads font names and sizes from
+text spans, finds the logo as the repeated top-band image or vector group, finds the footer
+as the text repeated in the bottom band of every page with the page-number pattern split
+out, and detects the title-slide decoration. Open `brand_swatch.png`, check contrast, fonts,
+footer and logo crop look right, fix `brand.json` by hand if not, and tell the user what the
+new profile contains. If the script cannot run, do the same with PyMuPDF calls by hand and
+still write `brand.json`.
 
 ## Hand-off to the review step
 
 A companion skill, written by a teammate, reviews the deck this skill produces and checks
-it against the brand source before it goes to the user. To make that review possible,
-always leave these artefacts in the session output folder with exactly these names:
+it against the brand profile before it goes to the user. Always leave these artefacts in the
+session output folder with exactly these names:
 
-- `brand.json` — the tokens extracted in step 2 (after any hand corrections from step 3);
-- `brand_swatch.png` and `logo.png` — the visual summary and the logo crop;
+- `brand.json` — a copy of the profile actually used for this deck;
+- `brand_swatch.png` and `logo.png`;
 - the rendered deck PDF, plus one PNG per page named `slide_01.png`, `slide_02.png`, ...;
-- `brand_source.pdf` — a copy of the user's template PDF the tokens came from.
+- `brand_source.pdf` — a copy of the template the profile came from.
 
 The review skill compares each slide PNG to `brand.json` and the source (background colour,
 fonts, accent usage, logo corner and size, footer text and page numbers, chart styling) and
-reports a pass/fail per check with a fix list. If it reports failures, apply the fixes and
-re-render before replying to the user. Do not post a deck the review has flagged as failing
-on background, fonts, logo or footer.
+reports pass/fail per check with a fix list. If it reports failures, apply the fixes and
+re-render before replying. Do not post a deck the review has flagged as failing on
+background, fonts, logo or footer.
 
 ## What good output looks like
 
-Side by side with the user's own deck, a reader should not be able to tell which one the
+Side by side with the company's own deck, a reader should not be able to tell which one the
 agent made: same background, same fonts, same accent colour, same logo corner, same footer
-and page numbers. The analysis content is the agent's; the skin is the company's.
+and page numbers, in a thread where nobody attached anything.
 
 ## What to avoid
 
-- Guessing colours from a screenshot when the PDF is available. Sample the file.
-- Keeping any PyMC Labs branding when a brand source exists.
-- Changing the footer wording or dropping page numbers.
+- Any PyMC Labs branding while this skill is attached.
+- Asking the user for a template when `brand/brand.json` exists.
+- Rewording the footer, dropping page numbers, or moving the logo.
+- Template content leaking into the analysis deck.
 - White chart backgrounds on dark slides, or body text in the display font.
-- Silently substituting a font. Always say which font was used instead.
+- Silent font substitution. Always say which font was used instead.
