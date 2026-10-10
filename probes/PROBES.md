@@ -184,3 +184,20 @@ brand-match prompted, unprompted, and across threads.
    $0.32-0.45 per deck). A precomputed `brand.json` should cut that; measure it.
 4. **No deterministic contract**: the brand is re-derived by the model each time, so two decks
    may drift. `brand.json` + the review skill make it checkable.
+
+## Before video — 2026-10-10 13:09, fresh thread "Channel spend and revenue analysis"
+
+Prompt (CSV attached, no template, no skill): `@Daimon Using channel_spend.csv, which marketing
+channels drove revenue? Make a 2-slide presentation for our CMO: slide 1 the key chart with the
+finding as the title, slide 2 the recommendation. Post the PDF and also a PNG image of each slide
+here in the thread.`
+
+Result: 2m04s, $0.26. Two slides posted inline as PNG plus the PDF. **PyMC Labs house style**:
+white background, Inter, navy headline, teal/navy/orange accents, PyMC Labs wordmark bottom-right.
+Daimon's own words: "You said no template, so I used the PyMC Labs house style rather than the
+Meridian look." (It knows the Meridian deck exists in this server; the preface "no template"
+steered it. In a server where the template was never posted the result would be the same.)
+Figures are high quality: horizontal bars with 95% whiskers, KPI tiles, three-card recommendation.
+
+Artefacts: `probes/before_video/before_daimon_two_slide_deck_no_template.gif` (screen recording,
+36 frames), `before_slide1_in_discord.jpg`, `before_slide2_in_discord.jpg`, `before_thread_overview.png`.
