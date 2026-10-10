@@ -10,12 +10,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(__file__).parent
 W, H = 1920, 1080
-BG, PANEL, INK, MUTED = "#1F1B24", "#2B2633", "#DCE6F2", "#8C8A94"  # Meridian brand tokens
-CORAL, GOLD, TEAL, VIOLET = "#FF6B4A", "#F2C14E", "#DCE6F2", "#8C8A94"
+BG, PANEL, INK, MUTED = "#646F3D", "#56602F", "#FFFFFF", "#DCE0C8"  # sampled from the team deck screenshot
+CORAL, GOLD, TEAL, VIOLET = "#E6C93D", "#FFF6CE", "#D8F6FF", "#FFFFFF"
 
 
 def font(size, bold=False, serif=False):
-    names = (("georgiab.ttf" if bold else "georgia.ttf"),) if serif else ()
+    names = (("georgiab.ttf" if bold else "georgia.ttf"),)  # reference deck is all serif
     for name in names + (("calibrib.ttf" if bold else "calibri.ttf"), ("arialbd.ttf" if bold else "arial.ttf")):
         try:
             return ImageFont.truetype(name, size)
@@ -101,15 +101,15 @@ def main():
            fill=INK, font=font(22))
 
     d.line((96, H - 60, W - 96, H - 60), fill=CORAL, width=1)
-    d.text((96, H - 36), "Meridian Supply Co.  |  Daimon Hackathon 2026  |  Track 03", fill=MUTED, font=font(20), anchor="lb")
+    d.text((96, H - 36), "Daimon Hackathon 2026  |  Track 03  |  slide-expert", fill=MUTED, font=font(20), anchor="lb")
     d.text((W - 96, H - 36), "github.com/JoshElieson/PyMC", fill=MUTED, font=font(20), anchor="rb")
     if False: d.text((W - 96, H - 36), "Daimon Hackathon 2026 · Track 03 · github.com/JoshElieson/PyMC",
            fill=MUTED, font=font(20), anchor="rb")
 
-    png = OUT / "workflow_slide_meridian.png"
+    png = OUT / "workflow_slide.png"
     img.save(png)
     pdf = fitz.open(); page = pdf.new_page(width=960, height=540)
-    page.insert_image(page.rect, filename=str(png)); pdf.save(OUT / "workflow_slide_meridian.pdf")
+    page.insert_image(page.rect, filename=str(png)); pdf.save(OUT / "workflow_slide.pdf")
     print("wrote", png, "and workflow_slide.pdf")
 
 
