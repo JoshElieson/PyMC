@@ -217,3 +217,15 @@ Artefacts: `probes/before_video/before_daimon_two_slide_deck_no_template.gif` (s
   gap, not a skill defect: new channels default to the workspace agent.
 - Fix: make `meridian-analyst` the server default agent (or route each channel to it).
   For a real customer this is a one-time `/agent-setup` choice; the submission should say so.
+
+## Review-step skip and fix — 2026-10-10 14:25-14:33, #testing
+
+- After routing was fixed, the identical two-slide prompt in `#testing` was answered by
+  `meridian-analyst` in the Meridian brand (1m50s, $0.24) but it wrote: "I skipped the
+  edit-menu review step because you asked for fixed deliverables."
+- Fix (commit 236b54f): both skills now state the review round is unconditional; asking for
+  "the PDF" / "a PNG per slide" / a fixed slide count describes the output, not permission to
+  skip. Only "no review" / "publish directly" skips it. Skills re-added to `meridian-analyst`
+  from main.
+- Verified: on request Daimon posted the contact sheet and the `post_wizard` "Edit your deck"
+  form (Step 1 of 7, Font) with buttons in `#testing`. Form left open for Nick to click through.
