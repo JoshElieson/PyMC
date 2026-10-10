@@ -28,3 +28,14 @@ Before: Daimon doing the job without your extension (a screenshot).
 What you built.
 After: Daimon doing the job with it (a screenshot).
 A link to your skill or code.    
+
+Presentation/Slides skill
+
+A: I want a slide
+D: asks for template
+A: Insert template
+D: extracts details, makes slides, sends for review
+A: review sides, easy edit to an details, hit publish
+D: slides publish
+
+
