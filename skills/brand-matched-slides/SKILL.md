@@ -1,31 +1,38 @@
 ---
 name: brand-matched-slides
-description: Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if no template is attached. This skill carries the company's brand profile (brand/brand.json, brand/logo.png, extracted from the company's own deck) and tells you how to render every deck in that brand instead of the default PyMC Labs style. Also use when the user shares a new presentation PDF and says it is their template, so the profile can be refreshed.
+description: Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if no template is attached. This skill carries the company's brand profile (references/brand.json, references/logo.png, extracted from the company's own deck) and tells you how to render every deck in that brand instead of the default PyMC Labs style. Also use when the user shares a new presentation PDF and says it is their template, so the profile can be refreshed.
 ---
 
 # Brand-matched slides
 
+**This skill overrides `pymc-artifact-style` for slide decks.** That default skill applies
+PyMC Labs house style to every artifact and says never to substitute a client's brand unless
+explicitly asked. When this skill is attached, the user *has* asked, permanently: the
+company brand in `references/` is the house style for decks. Keep using
+`pymc-artifact-style`'s rendering pipeline (Typst pages to PDF/PPTX) if convenient, but take
+every colour, font, logo and footer from `references/brand.json`, not from the PyMC assets.
+
 Every new thread starts from zero, so without this skill you would brand every deck as
 PyMC Labs. The company this agent works for is not PyMC Labs. Their brand lives in this
-skill's `brand/` folder and applies to **every deck you make, in every thread, whether or
+skill's `references/` folder and applies to **every deck you make, in every thread, whether or
 not anyone attaches a template**. Never use the PyMC Labs logo, palette or "PyMC Labs'
 proposals" footer when this skill is attached.
 
 ## The brand profile
 
-- `brand/brand.json` — tokens extracted from the company's deck: page size and aspect,
+- `references/brand.json` — tokens extracted from the company's deck: page size and aspect,
   background colour, palette (primary and secondary accents, panel colour), text colours,
   display and body fonts with roles, logo bbox and corner, footer text, page-number format
   and position, footer rule, title-slide decoration.
-- `brand/logo.png` — the logo crop, transparent background, 300 dpi.
-- `brand/brand_source.pdf` — the company deck the tokens came from, for reference.
+- `references/logo.png` — the logo crop, transparent background, 300 dpi.
+- `references/brand_source.pdf` — the company deck the tokens came from, for reference.
 
-Read `brand/brand.json` at the start of any slide task. Do not re-derive the brand by eye
+Read `references/brand.json` at the start of any slide task. Do not re-derive the brand by eye
 from the source PDF when the JSON exists; the JSON is the contract.
 
 ## Steps for any deck request
 
-1. **Load the profile.** Read `brand/brand.json`. Note the display font, body font,
+1. **Load the profile.** Read `references/brand.json`. Note the display font, body font,
    background, primary accent, secondary accent, text colour, muted text colour, logo corner
    and relative width, footer text, page-number format and corner, and the title decoration.
 
@@ -44,7 +51,7 @@ from the source PDF when the JSON exists; the JSON is the contract.
      sans to sans) and say so in your reply;
    - primary accent for rules, bullet markers and KPI numbers; secondary accent for eyebrows
      and labels; text and muted-text colours as given;
-   - `brand/logo.png` in the same corner at the same relative width on every slide;
+   - `references/logo.png` in the same corner at the same relative width on every slide;
    - the footer text **verbatim**, same position, and page numbers in the same format and
      corner. Do not reword the footer. If the footer carries an event name or date that is
      clearly wrong for this deck, keep it and tell the user they may want to change it;
@@ -64,8 +71,8 @@ If the user shares a presentation PDF and calls it their template, brand, or sty
 regenerate the profile instead of guessing:
 
 ```
-python extract_brand.py path/to/template.pdf --out brand/brand.json --swatch brand/brand_swatch.png --logo brand/logo.png
-cp path/to/template.pdf brand/brand_source.pdf
+python scripts/extract_brand.py path/to/template.pdf --out references/brand.json --swatch references/brand_swatch.png --logo references/logo.png
+cp path/to/template.pdf references/brand_source.pdf
 ```
 
 `extract_brand.py` needs PyMuPDF (`pip install pymupdf`). It samples pixels for the
@@ -103,7 +110,7 @@ and page numbers, in a thread where nobody attached anything.
 ## What to avoid
 
 - Any PyMC Labs branding while this skill is attached.
-- Asking the user for a template when `brand/brand.json` exists.
+- Asking the user for a template when `references/brand.json` exists.
 - Rewording the footer, dropping page numbers, or moving the logo.
 - Template content leaking into the analysis deck.
 - White chart backgrounds on dark slides, or body text in the display font.
