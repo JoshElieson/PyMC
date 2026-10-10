@@ -175,7 +175,10 @@ Trigger: any request for slides, a deck, a presentation or a PDF to present.
 
 5. **Write the review artefacts** (see hand-off below), then deliver: post the PDF and say in
    one short paragraph that the deck uses the stored company brand, which fonts and colours
-   were applied, and any font substitution. Offer PPTX or source on request.
+   were applied, and any font substitution. Offer PPTX or source on request. Check the post
+   actually carries the attachments; Discord drops a file re-sent under a name already used
+   in the thread, so later renders must use new names (`_r2`, `_final`) and a post that
+   arrives without its files must be re-sent with fresh names before you claim it.
 
 ## Single-slide requests
 

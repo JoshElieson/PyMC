@@ -171,11 +171,24 @@ gridlines). They never change fonts or colours. Those stay under options 1 and 3
 
 On `✅ publish` (PDF) or `📎 publish pptx`:
 1. Final render from the current version. It must match the last preview exactly.
-2. Attach `<Company>_<topic>_<YYYY-MM-DD>.pdf` (or `.pptx`) and `style.json` so the same
-   look can be reused in a later thread ("use this style.json").
+2. Attach `<Company>_<topic>_<YYYY-MM-DD>_final.pdf` (or `.pptx`) and
+   `<Company>_style_<YYYY-MM-DD>.json` so the same look can be reused in a later thread
+   ("use this style.json").
 3. One closing line: slide count plus a summary of the edits made, e.g.
    `Published 5 slides · Serif, L, Dark, Corporate · 2 text edits`.
 Never mention sandbox paths like `/mnt/session/outputs`. The attachments are the output.
+
+## Attachments: new names every round, and check they arrived
+
+Discord silently drops a file that is re-sent under a name already attached earlier in the
+thread; the message then claims an attachment that nobody can see. So:
+
+- Every re-render writes new file names with a round number: `contact_sheet_r2.png`,
+  `slide_01_r2.png`, `deck_r2.pdf`, `style_r2.json`. Never reuse `slide_01.png` or the
+  first deck's PDF name for a later round. The published file uses the `_final` names above.
+- After posting, confirm the reply actually carries the files. If a post comes back with no
+  attachments, copy the files to fresh names and post them again before saying anything
+  else. Do not tell the user a file is attached unless it is.
 
 ## What good output looks like
 
