@@ -14,11 +14,11 @@ slide-expert.md is a skill that improves Daimon’s ability to make presentation
 3. Publish slides in .pptx or .pdf formats, all within Discord
 
 **Workflow**
-User:     Request slides
-Daimon:   Asks for a template
-User:     Upload any previous slides/template
-Daimon:   Extracts details, makes slides, sends for review
-User:     Review sides, easy edit to an details, hit publish
-Daimon:   Published slides to user for download
+User:     Request slides  
+Daimon:   Asks for a template  
+User:     Upload any previous slides/template  
+Daimon:   Extracts details, makes slides, sends for review  
+User:     Review sides, easy edit to an details, hit publish  
+Daimon:   Published slides to user for download  
 
 
