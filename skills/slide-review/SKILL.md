@@ -1,6 +1,6 @@
 ---
 name: slide-review
-description: Always use right after a slide deck has been rendered in the thread (even if the user only asked for a PDF or PNGs), or when the user asks to review, edit, restyle or publish slides (font, font size, colours, style, slide text, order, logo, footer). Runs a numbered-menu review loop in Discord, applies edits across the whole deck, and publishes the final PDF/PPTX.
+description: "Always use right after a slide deck has been rendered in the thread (even if the user only asked for a PDF or PNGs), or when the user asks to review, edit, restyle or publish slides (font, font size, colours, style, slide text, order, logo, footer). Runs a numbered-menu review loop in Discord, applies edits across the whole deck, and publishes the final PDF/PPTX."
 ---
 
 # Slide review: edit with menus, then publish

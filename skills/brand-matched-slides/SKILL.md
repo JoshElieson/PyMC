@@ -1,6 +1,6 @@
 ---
 name: brand-matched-slides
-description: Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if nothing is attached. Also use when the user shares a presentation (PDF or PPTX) and calls it their template, brand, style guide or house style, or asks to set, update or refresh the company brand, or asks to set up, get started with, check the status of, or get help with branded slides. The brand profile is created by this skill from the user's own deck and stored as a BRAND PROFILE message in Discord, so it applies to every deck in every thread. Setup is one step: attach the company deck.
+description: "Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if nothing is attached. Also use when the user shares a presentation (PDF or PPTX) and calls it their template, brand, style guide or house style, or asks to set, update or refresh the company brand, or asks to set up, get started with, check the status of, or get help with branded slides. The brand profile is created by this skill from the user's own deck and stored as a BRAND PROFILE message in Discord, so it applies to every deck in every thread. Setup is one step: attach the company deck."
 ---
 
 # Brand-matched slides
