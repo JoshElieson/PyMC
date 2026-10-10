@@ -178,6 +178,12 @@ because the skill + a sample "brand source" deck can be re-run by the judges.
 6. Slides for submission: job sentence, before (PyMC-branded slide 1), what we built,
    after (client-branded slide 1), repo link.
 
+**Skill split (decided ~12:45):** deck creation (ask for template → extract brand → make
+slides) is a separate skill. `skills/slide-review/` covers the second half: review →
+Discord numbered-menu edits (font, size, colour scheme, style, text, order, logo/footer)
+→ publish. Hand-off contract: `deck.typ` + `style.json` (schema in
+`skills/slide-review/example_style.json`).
+
 **Working plan for Track 03 (update as decisions are made):**
 - [ ] Choose the job. Must be concrete, something Daimon visibly does badly today, and demoable in a screenshot. **Current candidate: chart communication (above).**
 - [ ] Capture the **before** screenshot early, before any skill is attached.
