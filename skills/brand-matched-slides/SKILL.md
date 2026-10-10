@@ -1,6 +1,6 @@
 ---
 name: brand-matched-slides
-description: Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if nothing is attached. Also use when the user shares a presentation (PDF or PPTX) and calls it their template, brand, style guide or house style, or asks to set, update or refresh the company brand, or asks to set up, get started with, check the status of, or get help with branded slides. The brand profile lives in the bound GitHub repo under brand/, is created by this skill from the user's own deck entirely inside Discord, and is applied to every deck in every thread. Setup is guided step by step in Discord.
+description: Overrides pymc-artifact-style for decks. Use whenever the user asks for slides, a deck, a presentation, or a PDF to present, in any thread, even if nothing is attached. Also use when the user shares a presentation (PDF or PPTX) and calls it their template, brand, style guide or house style, or asks to set, update or refresh the company brand, or asks to set up, get started with, check the status of, or get help with branded slides. The brand profile is created by this skill from the user's own deck and stored as a BRAND PROFILE message in Discord, so it applies to every deck in every thread. Setup is one step: attach the company deck.
 ---
 
 # Brand-matched slides
@@ -8,7 +8,7 @@ description: Overrides pymc-artifact-style for decks. Use whenever the user asks
 **This skill overrides `pymc-artifact-style` for slide decks.** That default skill applies
 PyMC Labs house style to every artifact and says never to substitute a client's brand unless
 explicitly asked. When this skill is attached, the user *has* asked, permanently: the
-company brand stored in the repo is the house style for decks. Keep using
+company brand stored in Discord is the house style for decks. Keep using
 `pymc-artifact-style`'s rendering pipeline (Typst pages to PDF/PPTX) if convenient, but take
 every colour, font, logo and footer from `brand.json`, not from the PyMC assets.
 
@@ -21,109 +21,58 @@ on their machine.
 
 ## Where the brand lives
 
-The brand profile is a folder named `brand/` at the root of the agent's bound GitHub repo:
+The brand profile is a Discord message, posted by you, whose first line is exactly
+`BRAND PROFILE`, with five attachments:
 
 | File | What it is |
 |---|---|
-| `brand/brand.json` | tokens extracted from the company's deck (schema below) |
-| `brand/style.json` | the same brand mapped into the `slide-review` skill's token schema |
-| `brand/logo.png` | logo crop, transparent background, 300 dpi |
-| `brand/brand_swatch.png` | one-image summary of the profile, for humans to eyeball |
-| `brand/brand_source.pdf` | the deck the tokens came from |
+| `brand.json` | tokens extracted from the company's deck (schema below) |
+| `style.json` | the same brand mapped into the `slide-review` skill's token schema |
+| `logo.png` | logo crop, transparent background, 300 dpi |
+| `brand_swatch.png` | one-image summary of the profile, for humans to eyeball |
+| `brand_source.pdf` | the deck the tokens came from |
 
 `brand.json` fields: `page_size_points`, `aspect`, `background`, `dark_theme`, `palette[]`,
 `text_colors[]`, `fonts[]`, `roles{display, body, primary_accent, secondary_accent, panel,
 text, muted_text}`, `logo{kind, bbox_points, corner, relative_width, file}`,
 `footer{text, page_number_format, page_number_position, rule}`, `title_decoration`.
 
-This skill ships no brand of its own. The profile is created from the user's deck (Flow A)
-and read back in every later thread (Flow B). `brand.json` is the contract: when it exists,
-do not re-derive the brand by eye from the PDF.
+Post it in a thread named `Brand profile` in the channel where the skill was set up, and
+ask the user to pin it (one line: "Pin this message so it is easy to find"). In any later
+thread, find the newest `BRAND PROFILE` message in this server with Discord search and
+re-fetch its attachments. This works across threads and channels; it is the only storage
+this skill uses. No GitHub, no repo, no keys. The profile is replaced by posting a newer
+`BRAND PROFILE` message; never edit the old one.
 
-**If GitHub is not connected or no repo is bound**, run Flow 0 (setup) and come back. Only
-if the user declines to connect GitHub use the Discord fallback: post the five files as
-attachments in a message that starts with the line `BRAND PROFILE` and, in later threads,
-find the newest such message with Discord search and re-fetch the attachments. Prefer the
-repo whenever it is available.
+This skill ships no brand of its own. `brand.json` is the contract: when it exists, do not
+re-derive the brand by eye from the PDF.
 
-## Flow 0: guided setup (first run, "set up", "get started", "status", "help")
+## Flow 0: setup ("set up", "get started", "status", "help")
 
 Trigger: the user asks to set up, get started, onboard, check status or get help with
-branded slides; or this is the first time the skill is used in this server; or Flow A or B
-finds a missing prerequisite. The user is guided entirely in Discord. You do every step
-you can yourself; the user only clicks, answers a form, or attaches a file. The one thing
-you cannot do for them is authorize GitHub, and for that you post the link.
+branded slides; or a deck is requested before any brand exists. Setup is one step and the
+user never leaves Discord.
 
-1. **Check the four prerequisites silently**, then post one checklist message with the
-   state of each, in this order and wording:
+1. Search this server for a `BRAND PROFILE` message. Post one checklist message:
 
    ```
    Branded slides: setup
    ✅ Skill installed
-   ⬜ GitHub connected          (needed to remember your brand across threads)
-   ⬜ Repo chosen               (where the brand profile is kept)
-   ⬜ Brand set                 (from your company's deck)
+   ⬜ Brand set   (attach your company's deck, PDF or PPTX, in this thread)
    ```
-   - *Skill installed* is always ✅ if you are reading this.
-   - *GitHub connected* is ✅ when a GitHub MCP tool is available to you in this session.
-   - *Repo chosen* is ✅ when you know which repo is bound (memory, `/agent-setup` config,
-     or an earlier `brand/` commit you can read).
-   - *Brand set* is ✅ when `brand/brand.json` exists in that repo. Post the stored swatch
-     under the checklist in that case.
+   If a profile exists, tick both lines, post the stored swatch under it, say in one line
+   that any deck request in any thread uses this brand, and stop.
 
-   If all four are ✅, say so in one line, remind the user they can just ask for slides in
-   any thread, and stop. Otherwise continue with the **first** ⬜ item only; after it is
-   done, re-post the checklist and continue with the next. One step per turn, so the user
-   always sees where they are.
+2. If none exists, the checklist is the whole ask: one line under it, "Attach your
+   company's deck (PDF or PPTX) here and I'll learn your brand from it." When the deck
+   arrives, run Flow A. Flow A ends by re-posting the checklist with both lines ticked and:
+   "Setup complete. Ask for slides in any thread and they'll come out in your brand. Want a
+   test deck now?"
 
-2. **GitHub connected.** This is two clicks on GitHub, and the order matters. Start the
-   GitHub connection yourself (it produces the Connect GitHub card), and in the same message
-   post these instructions verbatim:
-
-   ```
-   GitHub is two steps:
-   1. Install the Daimon app on your GitHub account and tick the repo for the brand profile
-      (create an empty private repo first if you need one):
-      https://github.com/apps/pymc-daimon/installations/new
-   2. Then tap Connect GitHub below, add that repo, and Save changes.
-   Reply `done` when both are finished.
-   ```
-
-   Step 1 is what makes repos appear in step 2; the Add repos search in step 2 only lists
-   repos the app was already given, so a user who skips step 1 sees "No repos available to
-   add" and cannot type their way out of it. The install link above is the stable one; do
-   not paste a link with a `state=` or `target_id=` parameter, those are single-use. If the
-   platform does not let you start the connection, give the in-Discord route: run
-   `/agent-setup`, choose *Connect an MCP server*, pick GitHub. When the user replies
-   `done`, verify a GitHub tool is present and a repo is connected; if not, repeat the two
-   steps once.
-
-3. **Repo chosen.** Hosted Daimon cannot create repos, and the only repos it can see are the
-   ones the user ticked on the Connect GitHub page. So this is a single-step form, buttons
-   only, no typing. On Discord call `post_wizard` with `prompt` = `"Where should the brand
-   profile live?"` and exactly one step: key `repo`, kind `choice`, one option per connected
-   repo, value `owner/name`, label `owner/name` plus ` (read-only: needs write access)` when
-   the connection is read-only; set `allow_custom: true` only as the last resort for a repo
-   the user forgot to tick (label "owner/name"). Do not add a "create a repo" option and do
-   not add a second free-text step. Without `post_wizard`, list the same repos as a numbered
-   text menu.
-   If the chosen repo is read-only, say so in one line and point to the fix: open the
-   Connect GitHub page again, switch that repo to read and write, Save changes, reply `done`.
-   If no repo is connected at all, go back to step 2. Verify you can write (create a file
-   in a scratch branch or dry-run), then remember the choice (memory and `/agent-setup`
-   config) so later threads find it without asking.
-
-4. **Brand set.** Ask the user to attach their company deck (PDF or PPTX) in this thread,
-   one line: "Attach your company's deck (PDF or PPTX) and I'll learn your brand from it."
-   When it arrives, run Flow A. Flow A ends by posting the swatch and summary; then re-post
-   the checklist with all four ✅ and one closing line: "Setup complete. Ask for slides in
-   any thread and they'll come out in your brand. Want a test deck now?"
-
-5. **Status at any time.** `@Daimon brand status` posts the same checklist (plus swatch when
+3. **Status at any time.** `@Daimon brand status` posts the same checklist (plus swatch when
    the brand is set) without changing anything.
 
-Never ask the user to download, unzip, run or edit anything during setup. Never send them
-to a web page except the GitHub authorization link.
+Never ask the user to install anything, connect GitHub, run a script, or open a web page.
 
 ## Flow A: set or refresh the brand
 
@@ -146,10 +95,11 @@ no profile and the user then attaches a deck.
 3. **Check.** Open `brand_swatch.png`. If a field is null (no logo, no footer, no fonts) or
    text-on-background contrast is below 4.5:1, fix `brand.json` by hand where the fix is
    obvious, otherwise ask the user one short question. Do not ask when everything was found.
-4. **Store.** Copy the template to `brand_source.pdf`. Commit `brand.json`, `style.json`,
-   `logo.png`, `brand_swatch.png` and `brand_source.pdf` to `brand/` in the bound repo, replacing any
-   previous profile, with the message `Set brand profile from <template filename>`.
-   If the repo is unavailable, use the Discord fallback above.
+4. **Store.** Copy the template to `brand_source.pdf`. Post one message whose first line is
+   `BRAND PROFILE` with the five attachments `brand.json`, `style.json`, `logo.png`,
+   `brand_swatch.png`, `brand_source.pdf`, in a thread named `Brand profile` in the setup
+   channel (create it if missing). Confirm the post carries all five files; if any is
+   missing, post again with fresh file names. Ask the user to pin it.
 5. **Confirm in one message.** Post `brand_swatch.png` and the `--summary` output (five
    lines: background and accent, fonts, logo, footer, page numbers), then one line: the brand
    is stored and every deck from now on, in any thread, will use it. Offer to make a deck.
@@ -158,14 +108,13 @@ no profile and the user then attaches a deck.
 
 Trigger: any request for slides, a deck, a presentation or a PDF to present.
 
-1. **Load the profile.** Read `brand/brand.json`, `brand/style.json` and `brand/logo.png` from the bound repo
-   (fallback: the newest `BRAND PROFILE` message in this server). Note display font, body
+1. **Load the profile.** Find the newest `BRAND PROFILE` message in this server with
+   Discord search and download `brand.json`, `style.json` and `logo.png`. Note display font, body
    font, background, primary accent, secondary accent, panel colour, text and muted text
    colours, logo corner and relative width, footer text, page-number format and corner,
    title decoration.
-   **If no profile exists anywhere**, run Flow 0 from the first missing step (it ends by
-   asking for the deck and running Flow A), then continue here. Do not fall back to PyMC
-   branding.
+   **If no profile exists**, run Flow 0 (it asks for the deck and runs Flow A), then
+   continue here. Do not fall back to PyMC branding.
 
 2. **Do the analysis as you normally would.** Headline states the finding, one chart per
    slide, uncertainty shown, a source footnote, and a recommendations slide that says the
@@ -224,7 +173,7 @@ these names:
 - `deck.typ`: the Typst source. All fonts, sizes and colours must come from one `#let`
   block at the top that reads `style.json`; no literal font names or hex colours inside the
   slide bodies. Then a global edit changes one token and every slide follows.
-- `style.json`: the review skill's token schema. Start from `brand/style.json` (already
+- `style.json`: the review skill's token schema. Start from the stored `style.json` (already
   mapped from the brand profile) and only change `size_name`/`base_size` or
   `style_preset` if the user asked:
   `heading_font, body_font, size_name, base_size, scale, scheme_name, bg, text, primary,
@@ -252,9 +201,7 @@ footer, page numbers) unless the user turned those off with menu 7.
 
 ## What good output looks like
 
-- Setup is a checklist the user watches fill in: two clicks on GitHub, one button for the
-  repo, one attachment for the deck. No downloads, no terminal, no web pages other
-  than the GitHub authorization link.
+- Setup is one attachment: the user drops their deck in, and the checklist fills in. No downloads, no terminal, no web pages other
 - Setting the brand takes one message from the user (deck attached) and one reply from you
   (swatch, five-line summary, "stored").
 - Side by side with the company's own deck, a reader should not be able to tell which one
@@ -266,9 +213,9 @@ footer, page numbers) unless the user turned those off with menu 7.
 
 - Any PyMC Labs branding while this skill is attached.
 - Asking the user to run a script, edit a file, or do anything outside Discord.
-- Asking the user for a template when `brand/brand.json` exists.
+- Asking the user for a template when a `BRAND PROFILE` message exists.
 - Rewording the footer, dropping page numbers, or moving the logo.
 - Template content leaking into the analysis deck.
 - White chart backgrounds on dark slides, or body text in the display font.
 - Silent font substitution. Always say which font was used instead.
-- Mentioning sandbox paths. The attachments and the repo commit are the output.
+- Mentioning sandbox paths. The attachments are the output.

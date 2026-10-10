@@ -158,9 +158,11 @@ was never posted in the server, plus fidelity (footer rewording, content leakage
 and having a checkable contract. **After-runs must be done in a channel where the template
 was never shared.** See `probes/PROBES.md` for the evidence. The skill therefore ships the brand profile
 (`brand.json` + `logo.png`), created **inside Discord**: the user attaches their deck once, Daimon
-runs `scripts/extract_brand.py` in its sandbox and commits the profile to `brand/` in the bound
-GitHub repo (`brand.json`, `style.json`, `logo.png`, `brand_swatch.png`, `brand_source.pdf`); every later thread
-reads it back. The skill itself ships no brand (decided 13:20; the user must never leave Discord).
+runs `scripts/extract_brand.py` in its sandbox and posts the profile as a pinned `BRAND PROFILE`
+message (`brand.json`, `style.json`, `logo.png`, `brand_swatch.png`, `brand_source.pdf`); every
+later thread finds it by Discord search. The skill ships no brand. GitHub storage was dropped
+15:30: the hosted Daimon GitHub App is read-only for contents (403 on commit), so setup is one
+attachment and nothing else.
 
 **Why this wins on the judging criteria:** the before/after contrast is stark and visual
 (PyMC-branded vs client-branded, same content); the use case is concrete (every analyst
