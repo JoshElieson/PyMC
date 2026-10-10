@@ -1,0 +1,16 @@
+{
+  "heading_font": "Playfair Display",
+  "body_font": "Inter",
+  "size_name": "M",
+  "base_size": 20,
+  "scale": 1.25,
+  "scheme_name": "Template (Navy & Coral)",
+  "bg": "#0B1F3A",
+  "text": "#F5F1E8",
+  "primary": "#E8735A",
+  "accent": ["#F2B544", "#7FB7BE"],
+  "style_preset": "Corporate",
+  "logo": { "path": "logo.png", "corner": "tl", "on": true },
+  "footer": { "text": "Meridian Supply Co. · Confidential", "on": true, "page_numbers": true },
+  "slide_size": "16:9"
+}
