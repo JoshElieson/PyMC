@@ -188,10 +188,12 @@ the slide title; the chart fills the body; a source footnote sits above the foot
 
 ## Fonts
 
-Company fonts such as Georgia and Calibri are usually not redistributable, so they are not
-bundled. If a font named in `brand.json` is missing in the sandbox, substitute by class and
-say so in one line of the reply: a serif display font -> Playfair Display (or Source Serif 4),
-a sans body font -> Inter. Never fall back to a sans-serif for serif titles.
+Company fonts are often not redistributable, so they are not bundled. If a font named in
+`brand.json` is missing in the sandbox, substitute by class and say so in one line of the
+reply: a serif display font -> Playfair Display (or Source Serif 4), a sans body font ->
+Inter (or Carlito for Calibri-metric decks). Never fall back to a sans-serif for serif titles.
+Nothing in this skill assumes a particular company, font or palette; everything comes from
+the stored profile.
 
 ## Hand-off to the review step (`slide-review` skill)
 

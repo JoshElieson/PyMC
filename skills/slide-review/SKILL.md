@@ -41,7 +41,7 @@ Round shape on Discord:
 
    | key | kind | question | options (value → label) |
    |---|---|---|---|
-   | `font` | choice | Font | `keep` → `◉ Keep template (Georgia / Calibri)`, `serif` → `Serif: Playfair Display / Source Serif 4`, `sans` → `Clean sans: Inter / Inter`, `modern` → `Modern: Montserrat / Open Sans`, `mono` → `Mono accents: IBM Plex Sans / Plex Mono numbers` (allow_custom: true, for "heading / body") |
+   | `font` | choice | Font | `keep` → `◉ Keep template (<heading_font> / <body_font> from style.json)`, `serif` → `Serif: Playfair Display / Source Serif 4`, `sans` → `Clean sans: Inter / Inter`, `modern` → `Modern: Montserrat / Open Sans`, `mono` → `Mono accents: IBM Plex Sans / Plex Mono numbers` (allow_custom: true, for "heading / body") |
    | `size` | choice | Font size | `S` → `S  body 16pt (dense)`, `M` → `◉ M  body 20pt (default)`, `L` → `L  body 24pt (on a screen)`, `XL` → `XL body 28pt (big room)` |
    | `scheme` | choice | Colour scheme | `template` → `◉ Template (extracted from your deck)`, `light` → `Light: white bg, template primary accent`, `dark` → `Dark: deep bg, light text`, `contrast` → `High-contrast: black/white + one accent`, `mono` → `Monochrome: shades of primary` (allow_custom: true, for "#bg #primary [#accent]") |
    | `style` | choice | Style | `corporate` → `◉ Corporate`, `minimal` → `Minimal`, `bold` → `Bold`, `dense` → `Data-dense`, `playful` → `Playful` |
@@ -68,7 +68,8 @@ Always post one message, in this order:
 1. One contact-sheet PNG of all slides in a grid, numbered, sized for an inline Discord
    preview (about 1600 px wide). Don't post one image per slide.
 2. The current-style line, e.g.
-   `Font: Playfair / Inter · Size: M · Colours: Navy & Coral · Style: Corporate`
+   `Font: <heading_font> / <body_font> · Size: M · Colours: Template · Style: Corporate`
+   (every value read from `style.json`; never hard-code a company's fonts or colours)
 3. The main menu, exactly:
 
 ```
