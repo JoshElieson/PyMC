@@ -10,7 +10,8 @@ takes shape.
 - Started 2026-10-10 for the Daimon hackathon (see next section).
 - Empty repo so far. Python 3.13 is installed locally; PyMC is **not** yet installed.
 - Not a git repo yet (run `git init` before the first commit).
-- **Track chosen:** TBD. **Team name:** TBD. Update these once decided.
+- **Track chosen: Track 03 — Extend Daimon** (full brief below). **Team name:** TBD.
+- Central repo: https://github.com/JoshElieson/PyMC (branch `main`).
 
 ## Daimon hackathon instructions
 
@@ -95,6 +96,60 @@ name, members, and track in `#hackathon-team-registration`.
 - No-code alternative: `/agent-setup` in the team channel to add a skill or already-online server.
 - Deliverable (5 slides + link to skill/code): the job in one sentence; "before" screenshot; what you built; "after" screenshot; link.
 - Example jobs: explaining a GitHub project to a newcomer (skill + DeepWiki), monthly company-data check, public-economic-data helper, web info collection/summarization.
+
+### Track 03 brief (our track, verbatim from the event page)
+
+> **Teach Daimon a job it can't do yet.**
+> Every new Daimon thread starts from zero. Give it a capability for a job it does
+> badly today, and show the difference.
+>
+> **The goal.** Pick a concrete job, extend Daimon so it does it well, and show Daimon
+> before and after.
+>
+> **What you build.** A skill: a short file of written instructions that tells Daimon
+> how to do a job: the steps, what to check, what good output looks like.
+> Optionally, an MCP server: tools Daimon can call, so the heavy, repeatable part is
+> done the same way every time. Use one that's already online (like DeepWiki, which
+> answers questions about GitHub projects) or run your own.
+> A good skill on its own can win: you're judged on the idea and the difference it
+> makes, not on the code.
+> Examples: explain a GitHub project to a newcomer (a skill plus DeepWiki); a monthly
+> check on a company's data; a helper for public economic data; collecting and
+> summarising information from the web.
+> Adding them: run `/agent-setup` in your team's channel to add your skill or a server
+> to your team's agent. No code needed unless you build your own server.
+>
+> **What you hand in, by 2:00 PM.** Posted in #hackathon-team-submissions: a 5-slide
+> PDF or a short video, plus a link to your notebook or code. Cover:
+> 1. The job, in one sentence.
+> 2. Before: Daimon doing the job without your extension (a screenshot).
+> 3. What you built.
+> 4. After: Daimon doing the job with it (a screenshot).
+> 5. A link to your skill or code.
+>
+> **Optional: your own server in one command.** Download the template (a starter
+> skill and MCP server), unzip it, install uv, then in the folder run `uv run serve.py`.
+> It starts your server, gives it a public address, and prints the message to paste in
+> your team's channel:
+> `@Daimon attach the MCP server at https://<your-address>/mcp to our agent as <team>-tools`
+>
+> **No code needed.** Adding a skill, or a server that's already online, needs no code.
+>
+> **Example presentation.** A finished 5-slide presentation Daimon made from a single
+> message, with made-up figures. A video covers the same points as the slide list above.
+>
+> **Judging.** Five criteria, weighed together, no points: novelty; a concrete use
+> case; technical depth; communication; reproducibility. Teams are 2 to 6 people.
+> `/billing` in Discord shows your team's budget.
+
+**Working plan for Track 03 (update as decisions are made):**
+- [ ] Choose the job. Must be concrete, something Daimon visibly does badly today, and demoable in a screenshot.
+- [ ] Capture the **before** screenshot early, before any skill is attached.
+- [ ] Write the skill file: steps, what to check, what good output looks like. Keep it short.
+- [ ] Decide whether an MCP server adds real value. If yes, start from the template in `track3-template/` and run `uv run serve.py`.
+- [ ] Attach via `/agent-setup` (skill) or the `@Daimon attach the MCP server ...` message.
+- [ ] Capture the **after** screenshot.
+- [ ] Build the 5 slides (ask Daimon to generate them from one message) and post with the repo link by 2:00 PM.
 
 ### Rules
 
