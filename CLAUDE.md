@@ -152,8 +152,11 @@ font, navy/teal/orange palette, white background, footer saying the recommendati
 
 **Job statement (revised 12:55 after probes):** "Give Daimon our company's brand permanently,
 so every deck in every thread comes out in our template without anyone attaching it."
-Probes showed Daimon already matches a template *within* a thread (prompted or not); the gap
-is that nothing carries across threads. The skill therefore ships the brand profile
+Probes showed Daimon already matches a template within a thread (prompted or not) AND can
+re-fetch it across threads via Discord search. The remaining gap is a company whose template
+was never posted in the server, plus fidelity (footer rewording, content leakage), cost/time,
+and having a checkable contract. **After-runs must be done in a channel where the template
+was never shared.** See `probes/PROBES.md` for the evidence. The skill therefore ships the brand profile
 (`brand.json` + `logo.png`, generated once from the company PDF with `extract_brand.py`).
 
 **Why this wins on the judging criteria:** the before/after contrast is stark and visual

@@ -153,3 +153,34 @@ instructs Daimon to render all decks with them.
 - **Before:** fresh thread, no attachment, "make a 5-slide deck" -> PyMC Labs-branded
   (`probes/before/slide_before_*.png`, already captured 12:19).
 - **After:** fresh thread, no attachment, skill attached, same ask -> Meridian-branded.
+
+## Cross-thread probe (before, no skill) — 2026-10-10 12:55, fresh thread, nothing attached
+
+Prompt: `@Daimon Do you have our company's presentation template on file? If so, describe its
+background colour, fonts, logo and footer. If not, say so.`
+
+Result (1m44s, $0.06): **"Yes. I have it. This thread's workspace was empty, so I re-fetched
+meridian_board_deck.pdf from the Discord attachment link and read it directly. My notes from
+an earlier session agree with what I found."** It then listed every token correctly:
+#1F1B24 background, #2B2633 panels, coral #FF6B4A band, Georgia Bold 26/40/24 pt, Calibri
+14 pt body, #DCE6F2 text, #8C8A94 muted, #F2C14E yellow, logo bars 30x6 and 22x6 pt at
+top-left, coral rule at y=496 from x=36 to 924, footer text verbatim, "n / N" on the right.
+
+**So "every thread starts from zero" is not literally true for Daimon**: it searches the
+server's Discord history and its own session notes, and will re-fetch an attachment from
+another thread. Within one Discord server where the template was shared once, Daimon can
+brand-match prompted, unprompted, and across threads.
+
+### What is actually left for a skill to fix (evidence-based)
+
+1. **Template never shared in this server.** The 12:19 deck (`slides_before_*.png`,
+   PyMC-branded) is the honest before: a company whose template has never been posted in
+   the server. The skill ships the brand profile so that case is covered. Any after run must
+   happen in a server/channel where the template was never posted (e.g. our hackathon team
+   channel on the Decision AI server), otherwise Discord search confounds it.
+2. **Fidelity slips**: footer rewording ("Board use only" -> "CMO review"), template content
+   leaking into the analysis deck, currency dropped. Fixable by instruction + review step.
+3. **Cost/time**: it re-reads the PDF and re-derives the brand every time (2m36s-3m40s,
+   $0.32-0.45 per deck). A precomputed `brand.json` should cut that; measure it.
+4. **No deterministic contract**: the brand is re-derived by the model each time, so two decks
+   may drift. `brand.json` + the review skill make it checkable.
