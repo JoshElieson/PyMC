@@ -170,12 +170,16 @@ because the skill + a sample "brand source" deck can be re-run by the judges.
    colours as hex, background colour, heading + body fonts, logo image + position, footer
    pattern, slide size); write them to `brand.json`; render the deck with those tokens
    (Typst or python-pptx); show a one-slide swatch for confirmation if anything is ambiguous.
-4. Optional MCP server: `extract_brand(pdf_or_pptx) -> brand.json` tool so the heavy
+4. **Review skill (teammate-owned):** a second skill reviews the rendered deck against
+   `brand.json` and the source PDF and returns pass/fail per check. The hand-off contract
+   (file names it expects) is in `skills/brand-matched-slides/SKILL.md`. Keep that
+   section in sync if the reviewer's inputs change.
+5. Optional MCP server: `extract_brand(pdf_or_pptx) -> brand.json` tool so the heavy
    parsing is deterministic (PyMuPDF for fonts/colours/images, python-pptx for theme XML).
    Only build if the skill alone can't get Daimon to extract reliably.
-5. After shots: attach via `/agent-setup`, re-run the same "5-slide presentation for the
+6. After shots: attach via `/agent-setup`, re-run the same "5-slide presentation for the
    CMO" prompt with the brand-source deck attached, render pages, compare side by side.
-6. Slides for submission: job sentence, before (PyMC-branded slide 1), what we built,
+7. Slides for submission: job sentence, before (PyMC-branded slide 1), what we built,
    after (client-branded slide 1), repo link.
 
 **Working plan for Track 03 (update as decisions are made):**

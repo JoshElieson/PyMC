@@ -67,6 +67,23 @@ Labs logo, palette, or "PyMC Labs' proposals" footer when a brand source exists.
    short paragraph say which brand source you used, the fonts and colours you applied, and
    any substitutions. Offer the PPTX or source on request.
 
+## Hand-off to the review step
+
+A companion skill, written by a teammate, reviews the deck this skill produces and checks
+it against the brand source before it goes to the user. To make that review possible,
+always leave these artefacts in the session output folder with exactly these names:
+
+- `brand.json` — the tokens extracted in step 2 (after any hand corrections from step 3);
+- `brand_swatch.png` and `logo.png` — the visual summary and the logo crop;
+- the rendered deck PDF, plus one PNG per page named `slide_01.png`, `slide_02.png`, ...;
+- `brand_source.pdf` — a copy of the user's template PDF the tokens came from.
+
+The review skill compares each slide PNG to `brand.json` and the source (background colour,
+fonts, accent usage, logo corner and size, footer text and page numbers, chart styling) and
+reports a pass/fail per check with a fix list. If it reports failures, apply the fixes and
+re-render before replying to the user. Do not post a deck the review has flagged as failing
+on background, fonts, logo or footer.
+
 ## What good output looks like
 
 Side by side with the user's own deck, a reader should not be able to tell which one the
