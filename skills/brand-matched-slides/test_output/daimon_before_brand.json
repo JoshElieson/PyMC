@@ -1,0 +1,129 @@
+{
+  "source": "..\\..\\..\\probes\\before\\brandmatch_before_deck.pdf",
+  "pages": 5,
+  "page_size_points": [
+    960.0,
+    540.0
+  ],
+  "aspect": "1.778:1",
+  "background": "#1F1B24",
+  "dark_theme": true,
+  "palette": [
+    {
+      "hex": "#2B2633",
+      "area_share": 0.0536
+    },
+    {
+      "hex": "#FF6B4A",
+      "area_share": 0.0472
+    },
+    {
+      "hex": "#4A4653",
+      "area_share": 0.0069
+    },
+    {
+      "hex": "#DCE6F2",
+      "area_share": 0.0063
+    },
+    {
+      "hex": "#F2C14E",
+      "area_share": 0.0053
+    },
+    {
+      "hex": "#4C2C2C",
+      "area_share": 0.0034
+    }
+  ],
+  "text_colors": [
+    {
+      "hex": "#DCE6F2",
+      "chars": 1127
+    },
+    {
+      "hex": "#8C8A94",
+      "chars": 1022
+    },
+    {
+      "hex": "#F2C14E",
+      "chars": 27
+    },
+    {
+      "hex": "#FF6B4A",
+      "chars": 24
+    },
+    {
+      "hex": "#1F1B24",
+      "chars": 14
+    }
+  ],
+  "fonts": [
+    {
+      "name": "Calibri",
+      "chars": 1752,
+      "median_size": 13.0,
+      "max_size": 15.0,
+      "serif": false
+    },
+    {
+      "name": "Georgia-Bold",
+      "chars": 345,
+      "median_size": 20.0,
+      "max_size": 40.0,
+      "serif": true
+    },
+    {
+      "name": "Calibri-Bold",
+      "chars": 60,
+      "median_size": 14.0,
+      "max_size": 14.0,
+      "serif": false
+    },
+    {
+      "name": "Calibri-Italic",
+      "chars": 57,
+      "median_size": 16.0,
+      "max_size": 16.0,
+      "serif": false
+    }
+  ],
+  "roles": {
+    "display": "Georgia-Bold",
+    "body": "Calibri"
+  },
+  "logo": {
+    "kind": "vector+text",
+    "bbox_points": [
+      36,
+      30,
+      148,
+      46
+    ],
+    "colors": [
+      "#F2C14E",
+      "#FF6B4A"
+    ],
+    "corner": "top-left",
+    "relative_width": 0.117,
+    "file": "daimon_before_logo.png"
+  },
+  "footer": {
+    "text": "Meridian Supply Co.  |  Confidential - CMO review  |  Marketing channel review",
+    "page_number_format": "n / N",
+    "page_number_position": "bottom-right",
+    "rule": {
+      "y_points": 496,
+      "color": "#FF6B4A",
+      "width_points": 888
+    }
+  },
+  "title_decoration": {
+    "color": "#FF6B4A",
+    "bbox_points": [
+      520,
+      -10,
+      760,
+      550
+    ],
+    "shape": "block"
+  }
+}
