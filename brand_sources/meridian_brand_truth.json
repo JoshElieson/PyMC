@@ -1,0 +1,41 @@
+{
+  "_comment": "Ground truth for the Meridian brand-source deck. Use it to score what the skill extracts. Hex values are exact. The PDF embeds the real fonts (Georgia Bold, Calibri regular/bold/italic), so font names are parseable from the PDF itself. The PDF is the canonical test input; the PPTX is a convenience copy.",
+  "company": "Meridian Supply Co.",
+  "slide_size": {"aspect": "16:9", "pptx_inches": [13.333, 7.5], "pdf_points": [960, 540]},
+  "colors": {
+    "background": "#1F1B24",
+    "panel": "#2B2633",
+    "primary_accent": "#FF6B4A",
+    "secondary_accent": "#F2C14E",
+    "text": "#DCE6F2",
+    "muted_text": "#8C8A94"
+  },
+  "fonts": {
+    "display": {"name": "Georgia", "weight": "bold", "pdf_basefont": "Georgia-Bold"},
+    "body": {"name": "Calibri", "pdf_basefonts": ["Calibri", "Calibri-Bold", "Calibri-Italic"]}
+  },
+  "logo": {
+    "type": "wordmark + glyph",
+    "wordmark": "MERIDIAN",
+    "glyph": "two horizontal bars, coral over gold",
+    "position": "top-left, every slide",
+    "pdf_bbox_points": [36, 30, 140, 50]
+  },
+  "footer": {
+    "text": "Meridian Supply Co.  |  Confidential - Board use only  |  Q2 2026 Board Review",
+    "page_number_format": "n / N",
+    "page_number_position": "bottom-right",
+    "rule_above": {"color": "#FF6B4A", "weight_pt": 1},
+    "pdf_baseline_y_points": 514
+  },
+  "title_slide": {
+    "decoration": "diagonal coral band on the right third",
+    "eyebrow": {"text": "Q2 2026 BOARD REVIEW", "color": "#F2C14E", "style": "all caps, bold, small"},
+    "subtitle_style": "italic, muted"
+  },
+  "content_slide": {
+    "title_style": "serif bold, text colour, top-left",
+    "bullet_marker": "coral filled circle",
+    "kpi_panel": "right-side panel on #2B2633, value in coral serif bold, label in muted body"
+  }
+}

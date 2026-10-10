@@ -94,3 +94,40 @@ deck. A CMO at Meridian Supply Co. would never present it as-is. The skill: give
 existing deck (PDF/PPTX) from the user's company, extract its brand (fonts, colours,
 background, logo placement, footer conventions) and have Daimon render its deck in that
 brand. Before = PyMC-branded default; after = same content in the client's own look.
+
+## Brand-match probe (before, no skill) — run 2026-10-10 12:39, fresh thread
+
+Prompt (with `meridian_board_deck.pdf` + `channel_spend.csv` attached):
+`@Daimon Using channel_spend.csv, which marketing channels drove revenue? Put the answer in a
+5-slide PDF deck for our CMO that matches the look of the attached meridian_board_deck.pdf,
+which is our company's presentation template.`
+
+Result: 3m34s, $0.45. Daimon **claims** it matched the template unaided: "I read the exact
+colours, shapes, sizes and layout out of meridian_board_deck.pdf, and the Georgia and Calibri
+fonts are the ones embedded in it. That gives the dark background, coral and yellow accents,
+logo lockup, footer rule, slanted cover stripe, bullet style and figures card."
+Output: `probes/before/brandmatch_before_deck.pdf`, pages `brandmatch_before_1..5.png`.
+**Verified: the claim is true.** Running `extract_brand.py` on Daimon's deck gives background
+#1F1B24, Georgia-Bold / Calibri, logo top-left at 0.117 width, coral rule at y=496, `n / N`
+bottom-right, i.e. identical tokens to the Meridian source. Visually it is a convincing
+Meridian deck: coral band on the title, KPI panel, coral bullet dots, charts on the dark
+background in palette colours. Only the footer text differs (rewritten) and one bullet
+leaked template content ("geo-holdout design proposed for search").
+
+Deviations it admitted to on its own:
+- changed the footer wording ("Board use only" -> "CMO review");
+- dropped currency entirely because the CSV has none;
+- carried a "geo-holdout design proposed for search" reference over from the *board deck content*
+  into the new deck (template content leaked into analysis content).
+
+Implication: when explicitly told "match this template", Daimon may already do a decent job.
+The skill's measurable value then has to come from (a) doing it **without being told**, i.e.
+any deck request after a template has been shared in the thread; (b) fidelity scored against
+`brand_sources/meridian_brand_truth.json` rather than eyeballing; (c) not editing footer text
+and not leaking template content. Verify against the actual PDF before deciding.
+
+**Conclusion for the before/after:** an explicit "match this template" prompt is NOT a usable
+before. Next probe = the realistic workflow: share the template in a thread with a neutral
+message, then ask for the deck in a later message without mentioning style. If Daimon
+reverts to PyMC branding there, that is the before, and the skill's job is "apply the
+company brand every time a template has been shared, without being told".
