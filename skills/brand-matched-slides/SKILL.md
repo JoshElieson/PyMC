@@ -98,15 +98,20 @@ you cannot do for them is authorize GitHub, and for that you post the link.
    `done`, verify a GitHub tool is present and a repo is connected; if not, repeat the two
    steps once.
 
-3. **Repo chosen.** On Discord call `post_wizard` with `prompt` = `"Where should the brand
-   profile live?"` and one step: key `repo`, kind `choice`, options
-   `create` → `Create a private repo for me (recommended)`,
-   `existing` → `Use a repo I already have` (allow_custom: true, label "owner/name").
-   If `create`: create a private repo named `<server-or-team-name>-brand` on the user's
-   GitHub account, with a one-line README, and bind it. If `existing`: verify you can
-   read and write it; if not, ask for the `owner/name` again or offer `create`. Without
-   `post_wizard`, ask the same question as text with the two options. Remember the
-   choice (memory and `/agent-setup` config) so later threads find it without asking.
+3. **Repo chosen.** Hosted Daimon cannot create repos, and the only repos it can see are the
+   ones the user ticked on the Connect GitHub page. So this is a single-step form, buttons
+   only, no typing. On Discord call `post_wizard` with `prompt` = `"Where should the brand
+   profile live?"` and exactly one step: key `repo`, kind `choice`, one option per connected
+   repo, value `owner/name`, label `owner/name` plus ` (read-only: needs write access)` when
+   the connection is read-only; set `allow_custom: true` only as the last resort for a repo
+   the user forgot to tick (label "owner/name"). Do not add a "create a repo" option and do
+   not add a second free-text step. Without `post_wizard`, list the same repos as a numbered
+   text menu.
+   If the chosen repo is read-only, say so in one line and point to the fix: open the
+   Connect GitHub page again, switch that repo to read and write, Save changes, reply `done`.
+   If no repo is connected at all, go back to step 2. Verify you can write (create a file
+   in a scratch branch or dry-run), then remember the choice (memory and `/agent-setup`
+   config) so later threads find it without asking.
 
 4. **Brand set.** Ask the user to attach their company deck (PDF or PPTX) in this thread,
    one line: "Attach your company's deck (PDF or PPTX) and I'll learn your brand from it."
@@ -247,8 +252,8 @@ footer, page numbers) unless the user turned those off with menu 7.
 
 ## What good output looks like
 
-- Setup is a checklist the user watches fill in: one click to authorize GitHub, one button
-  for the repo, one attachment for the deck. No downloads, no terminal, no web pages other
+- Setup is a checklist the user watches fill in: two clicks on GitHub, one button for the
+  repo, one attachment for the deck. No downloads, no terminal, no web pages other
   than the GitHub authorization link.
 - Setting the brand takes one message from the user (deck attached) and one reply from you
   (swatch, five-line summary, "stored").

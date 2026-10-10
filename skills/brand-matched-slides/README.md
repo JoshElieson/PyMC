@@ -51,7 +51,8 @@ Branded slides: setup
 ⬜ GitHub connected      -> two clicks: install the Daimon GitHub app with the repo ticked
                             (https://github.com/apps/pymc-daimon/installations/new), then
                             tap Connect GitHub, add the repo, Save; reply "done"
-⬜ Repo chosen           -> one button: "Create a private repo for me" or name an existing one
+⬜ Repo chosen           -> one button per repo you ticked on GitHub (hosted Daimon cannot
+                            create repos; the repo must be read-and-write)
 ⬜ Brand set             -> user attaches the company deck; Daimon extracts and stores the brand
 ```
 
