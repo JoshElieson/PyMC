@@ -4,7 +4,7 @@ Usage:
     python extract_brand.py deck.pdf [--out brand.json] [--swatch brand_swatch.png] [--logo logo.png]
                             [--style style.json] [--summary]
 
---style writes the same brand mapped into the slide-review skill's token schema
+--style writes the same brand mapped into the review-loop token schema (Flow C)
 (heading_font, body_font, bg, text, primary, accent[], logo, footer, ...).
 
 --summary prints a short, chat-ready description of the profile (background, fonts, accent,
@@ -276,7 +276,7 @@ CORNER = {"top-left": "tl", "top-right": "tr", "top-center": "tl", "bottom-left"
 
 
 def style_tokens(brand: dict, logo_name: str = "logo.png") -> dict:
-    """Map brand.json to the slide-review skill's style.json schema."""
+    """Map brand.json to the review-loop style.json schema."""
     r, f, lg, deco = brand["roles"], brand["footer"], brand["logo"], brand["title_decoration"]
     accents = [c for c in (r["secondary_accent"], r["muted_text"]) if c]
     primary = r["primary_accent"] or r["text"]
@@ -322,7 +322,7 @@ def main():
     ap.add_argument("--out", type=Path, default=Path("brand.json"))
     ap.add_argument("--swatch", type=Path, default=None)
     ap.add_argument("--logo", type=Path, default=Path("logo.png"))
-    ap.add_argument("--style", type=Path, default=None, help="also write style.json for the slide-review skill")
+    ap.add_argument("--style", type=Path, default=None, help="also write style.json for the review loop")
     ap.add_argument("--summary", action="store_true", help="print a chat-ready summary instead of raw JSON")
     a = ap.parse_args()
     brand = extract(a.pdf, a.logo)

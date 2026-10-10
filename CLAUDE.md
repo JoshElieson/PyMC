@@ -176,7 +176,7 @@ because the skill + a sample "brand source" deck can be re-run by the judges.
 2. Create a sample "company" deck with a distinct brand (dark background, serif display
    font, different accent colours, a fake logo) to act as the brand source. Put it in
    `brand_sources/`.
-3. Skill `skills/brand-matched-slides/SKILL.md` (done, Discord-only): Flow A, user attaches
+3. Skill `skills/branded-slides/SKILL.md` (done, Discord-only; merged with slide-review 15:45): Flow A, user attaches
    their deck and calls it the template; Daimon extracts tokens with the shipped script, posts
    swatch + 5-line summary, commits `brand/` to the bound repo. Flow B, any deck request reads
    `brand/brand.json` + `logo.png` from the repo and renders with those tokens; if no profile
@@ -184,7 +184,7 @@ because the skill + a sample "brand source" deck can be re-run by the judges.
    Discord under a `BRAND PROFILE` heading and find them by search later.
 4. **Review skill (teammate-owned):** a second skill reviews the rendered deck against
    `brand.json` and the source PDF and returns pass/fail per check. The hand-off contract
-   (file names it expects) is in `skills/brand-matched-slides/SKILL.md`. Keep that
+   (file names it expects) is Flow C in `skills/branded-slides/SKILL.md`. Keep that
    section in sync if the reviewer's inputs change.
 5. Optional MCP server: `extract_brand(pdf_or_pptx) -> brand.json` tool so the heavy
    parsing is deterministic (PyMuPDF for fonts/colours/images, python-pptx for theme XML).
@@ -197,10 +197,10 @@ because the skill + a sample "brand source" deck can be re-run by the judges.
    after (client-branded slide 1), repo link.
 
 **Skill split (decided ~12:45):** deck creation (ask for template → extract brand → make
-slides) is a separate skill. `skills/slide-review/` covers the second half: review →
+slides) was a separate skill until 15:45; now Flow C of `skills/branded-slides/` covers the second half: review →
 Discord numbered-menu edits (font, size, colour scheme, style, text, order, logo/footer)
 → publish. Hand-off contract: `deck.typ` + `style.json` (schema in
-`skills/slide-review/example_style.json`).
+`skills/branded-slides/example_style.json`).
 
 **Working plan for Track 03 (update as decisions are made):**
 - [ ] Choose the job. Must be concrete, something Daimon visibly does badly today, and demoable in a screenshot. **Current candidate: chart communication (above).**

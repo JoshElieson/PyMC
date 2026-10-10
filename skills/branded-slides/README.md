@@ -1,4 +1,4 @@
-# brand-matched-slides
+# branded-slides
 
 Give Daimon your company's brand once, from Discord, and every deck in every thread comes out
 in your template instead of PyMC Labs house style. Nobody runs a script, edits a file, or
@@ -11,21 +11,21 @@ connects anything. This guide is written from a full run on a fresh Discord serv
   be a server admin to add skills).
 - Your company's deck as a PDF or PPTX. Any deck that already looks right. Four slides are enough.
 
-## Step 1: install the skills (admin, once per server)
+## Step 1: install the skill (admin, once per server)
 
 Hosted Daimon's built-in agent is read-only, so skills go on an editable copy. One message does
-the fork, both skill adds and the channel routing. Post this in the channel Daimon should
+the fork, the skill add and the channel routing. Post this in the channel Daimon should
 answer in:
 
 ```
-@Daimon fork Daimon into an editable copy named brand-agent, add both skills from the latest main of https://github.com/JoshElieson/PyMC (folders skills/brand-matched-slides and skills/slide-review), and point this channel at the copy. Yes to all approvals.
+@Daimon fork Daimon into an editable copy named brand-agent, add the skill from the latest main of https://github.com/JoshElieson/PyMC (folder skills/branded-slides), and point this channel at the copy. Yes to all approvals.
 ```
 
-Daimon opens a thread, forks itself, shows a preview of each skill and posts two approval
-cards. Click **Approve** on both. When it says the copy answers new threads in this channel,
+Daimon opens a thread, forks itself, shows a preview of the skill and posts one approval
+card. Click **Approve**. When it says the copy answers new threads in this channel,
 you are done. About two minutes.
 
-To update later, send the same message with "re-add both skills, replacing the versions you
+To update later, send the same message with "re-add the skill, replacing the version you
 have". Daimon refuses to import a skill that fails to parse and keeps the old one, so a bad
 update never breaks the agent.
 
@@ -63,6 +63,16 @@ changed. Publish PDF or Publish PPTX gives you the final file plus `style.json` 
 To change the brand later, attach a new deck and say `@Daimon update our brand to this`. The
 newest `BRAND PROFILE` message wins.
 
+## The review loop, click by click
+
+After every render Daimon posts a contact sheet, a current-style line and an "Edit your deck"
+form: Font, Font size, Colour scheme, Style (buttons), Logo & footer (a dropdown, tick what
+stays on), Slide text (one edit per line, e.g. `1 title: ...`), then What next (Apply and
+preview, Publish PDF, Publish PPTX, Undo last round). Submit. Daimon echoes only the real
+changes (`✔ Size → L`), re-renders, and posts a fresh form. Publish attaches the final file and
+`style.json`. Undo always goes back one round. Typed codes (`3c`, `1b 2c`) work as a fallback
+where buttons are not available.
+
 ## Snags we hit, and what to do
 
 - **Daimon ignores a message without `@Daimon`.** A bare "yes" or a file dropped in with no
@@ -92,9 +102,11 @@ Self-hosted Daimon with a write-capable GitHub App could store the same five fil
 ## Contents of this folder
 
 - `SKILL.md`: the instructions Daimon follows (Flow 0 setup, Flow A set/refresh brand, Flow B
-  make a deck, hand-off to `slide-review`).
+  make a deck, Flow C review and publish). One skill, one upload; the review loop used to be a
+  separate `slide-review` skill and was merged on 2026-10-10.
+- `example_style.json`: the token schema the review loop edits.
 - `scripts/extract_brand.py`: PyMuPDF-only extractor. Writes `brand.json`, `logo.png`,
-  `brand_swatch.png` and, with `--style`, `style.json` in the `slide-review` schema; `--summary`
+  `brand_swatch.png` and, with `--style`, `style.json` in the review schema; `--summary`
   prints the five chat lines. No company data is baked in anywhere.
 
 ## Verifying the extraction (judging evidence, not a user step)

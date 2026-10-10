@@ -63,8 +63,8 @@ def main():
     # header
     d.text((96, 70), "PROPOSED WORKFLOW", fill=CORAL, font=font(26, True))
     d.text((96, 104), "Your brand, every deck, without re-explaining it", fill=INK, font=font(56, True, serif=True))
-    d.text((96, 186), "Two Daimon skills: brand-matched-slides (remembers and applies the brand) "
-                      "+ slide-review (interactive restyle and publish)", fill=MUTED, font=font(28))
+    d.text((96, 186), "One Daimon skill, branded-slides: remembers and applies the brand, "
+                      "then an interactive restyle-and-publish loop", fill=MUTED, font=font(28))
 
     # step cards
     n = len(STEPS)

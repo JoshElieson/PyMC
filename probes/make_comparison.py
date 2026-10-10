@@ -62,7 +62,7 @@ def main():
     ap.add_argument("--after", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--before-label", default="BEFORE  -  Daimon default (no skill): PyMC Labs house style")
-    ap.add_argument("--after-label", default="AFTER  -  brand-matched-slides + slide-review: company brand, reviewed, published")
+    ap.add_argument("--after-label", default="AFTER  -  branded-slides skill: company brand, reviewed, published")
     a = ap.parse_args()
 
     before, after = load_slide(a.before), load_slide(a.after)
