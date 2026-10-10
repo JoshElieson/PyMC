@@ -142,33 +142,41 @@ name, members, and track in `#hackathon-team-registration`.
 > case; technical depth; communication; reproducibility. Teams are 2 to 6 people.
 > `/billing` in Discord shows your team's budget.
 
-### Our project direction: visual communication of Bayesian results
+### Our project direction: brand-matched slide decks (decided 2026-10-10 ~12:25)
 
-**Hypothesis:** Daimon's charts are correct but communicate badly. Likely failure modes
-(to be confirmed with probes): point estimates without credible intervals, forecasts as
-a single line instead of a fan chart, ArviZ diagnostic plots sent to non-technical
-audiences, unsorted/crammed group comparisons, missing titles/units, fonts too small
-for Discord. This is a weakness that appears in every thread, so a fix has broad impact.
+**Finding from probes (see `probes/PROBES.md`):** Daimon's charts are already good
+(uncertainty shown, finding in the title, labelled units). Its slide decks are structurally
+good too, but **every deck is rendered in PyMC Labs' own brand**: PyMC Labs logo, Inter
+font, navy/teal/orange palette, white background, footer saying the recommendations are
+"PyMC Labs' proposals". There is no way to give Daimon the user's own brand.
 
-**Method:**
-1. Run the five probe prompts in `probes/PROBES.md` with the synthetic CSVs from
-   `probes/make_probe_data.py`. Screenshot each chart. These are the **before** shots.
-2. Fill the scoring table. Choose the weakness that fails most consistently.
-3. Fix via the allowed methods, in order of preference:
-   - **Skill first.** A short instruction file: when to use which chart, always show
-     uncertainty as a band or interval, title states the finding, label units, sort
-     groups by estimate, one chart per question, Discord-legible sizing (e.g. 10x6 in,
-     ≥14 pt fonts, 150 dpi), colorblind-safe palette, never post diagnostic plots
-     unless asked.
-   - **MCP server only if it earns its place.** Candidates: a `render_chart` tool that
-     takes tidy data + chart spec and returns a styled PNG so output is consistent every
-     time; or a `critique_chart` tool that checks a PNG for font size, missing axes
-     labels, missing intervals and returns a fix list.
-4. Re-run the same probes with the skill attached. These are the **after** shots.
-5. Slides: job in one sentence, before, what we built, after, repo link.
+**Job statement:** "Make Daimon's decks look like *our* company's decks: parse fonts,
+colours, background, logo and footer conventions from an existing presentation and render
+the new deck in that style."
 
-**Candidate job statement:** "Make every chart Daimon posts show its uncertainty and
-be readable by a decision-maker on the first look."
+**Why this wins on the judging criteria:** the before/after contrast is stark and visual
+(PyMC-branded vs client-branded, same content); the use case is concrete (every analyst
+who has to put Daimon's output in front of their own exec); technical depth comes from
+brand extraction (PDF/PPTX parsing, font + colour detection, logo cropping); reproducible
+because the skill + a sample "brand source" deck can be re-run by the judges.
+
+**Build plan:**
+1. Before shots: done. `probes/before/slide_before_1..5.png` + the PDF.
+2. Create a sample "company" deck with a distinct brand (dark background, serif display
+   font, different accent colours, a fake logo) to act as the brand source. Put it in
+   `brand_sources/`.
+3. Write the skill `skills/brand-matched-slides/SKILL.md`: when asked for slides, look for
+   an attached or previously shared deck; extract brand tokens (primary/secondary/accent
+   colours as hex, background colour, heading + body fonts, logo image + position, footer
+   pattern, slide size); write them to `brand.json`; render the deck with those tokens
+   (Typst or python-pptx); show a one-slide swatch for confirmation if anything is ambiguous.
+4. Optional MCP server: `extract_brand(pdf_or_pptx) -> brand.json` tool so the heavy
+   parsing is deterministic (PyMuPDF for fonts/colours/images, python-pptx for theme XML).
+   Only build if the skill alone can't get Daimon to extract reliably.
+5. After shots: attach via `/agent-setup`, re-run the same "5-slide presentation for the
+   CMO" prompt with the brand-source deck attached, render pages, compare side by side.
+6. Slides for submission: job sentence, before (PyMC-branded slide 1), what we built,
+   after (client-branded slide 1), repo link.
 
 **Working plan for Track 03 (update as decisions are made):**
 - [ ] Choose the job. Must be concrete, something Daimon visibly does badly today, and demoable in a screenshot. **Current candidate: chart communication (above).**
