@@ -1,5 +1,5 @@
 {
-  "_comment": "Ground truth for the Meridian brand-source deck. Use it to score what the skill extracts. Hex values are exact; fonts in the PDF are stand-ins (Times-Bold/Helvetica) because PyMuPDF base14 fonts were used, the PPTX carries the real names.",
+  "_comment": "Ground truth for the Meridian brand-source deck. Use it to score what the skill extracts. Hex values are exact. The PDF embeds the real fonts (Georgia Bold, Calibri regular/bold/italic), so font names are parseable from the PDF itself. The PDF is the canonical test input; the PPTX is a convenience copy.",
   "company": "Meridian Supply Co.",
   "slide_size": {"aspect": "16:9", "pptx_inches": [13.333, 7.5], "pdf_points": [960, 540]},
   "colors": {
@@ -11,8 +11,8 @@
     "muted_text": "#8C8A94"
   },
   "fonts": {
-    "display": {"pptx": "Georgia", "pdf": "Times-Bold"},
-    "body": {"pptx": "Calibri", "pdf": "Helvetica"}
+    "display": {"name": "Georgia", "weight": "bold", "pdf_basefont": "Georgia-Bold"},
+    "body": {"name": "Calibri", "pdf_basefonts": ["Calibri", "Calibri-Bold", "Calibri-Italic"]}
   },
   "logo": {
     "type": "wordmark + glyph",

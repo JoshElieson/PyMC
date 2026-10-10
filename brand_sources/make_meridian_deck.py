@@ -1,6 +1,6 @@
 """Build the brand-source deck for the hackathon: a fictional Meridian Supply Co. board deck
 with a distinctive, parseable brand. Produces both PPTX (theme XML, real fonts) and PDF
-(what Daimon will most likely read), from the same spec.
+(the canonical test input: users will hand Daimon a PDF), from the same spec.
 
 Run:  python brand_sources/make_meridian_deck.py
 
@@ -24,6 +24,12 @@ from pptx.util import Emu, Inches, Pt
 OUT = Path(__file__).parent
 BG, CORAL, GOLD, ICE, MIST, PANEL = "#1F1B24", "#FF6B4A", "#F2C14E", "#DCE6F2", "#8C8A94", "#2B2633"
 TITLE_FONT, BODY_FONT = "Georgia", "Calibri"
+FONT_FILES = {  # noqa  embedded into the PDF so font names are parseable from the file
+    "GeorgiaB": r"C:\Windows\Fonts\georgiab.ttf",
+    "Calibri": r"C:\Windows\Fonts\calibri.ttf",
+    "CalibriB": r"C:\Windows\Fonts\calibrib.ttf",
+    "CalibriI": r"C:\Windows\Fonts\calibrii.ttf",
+}
 FOOTER = "Meridian Supply Co.  |  Confidential - Board use only  |  Q2 2026 Board Review"
 
 SLIDES = [
@@ -107,7 +113,10 @@ def build_pdf(path):
     def c(h): return tuple(v / 255 for v in hex_rgb(h))
     total = len(SLIDES)
     for i, sp in enumerate(SLIDES, 1):
-        pg = doc.new_page(width=W, height=H); sh = pg.new_shape()
+        pg = doc.new_page(width=W, height=H)
+        for alias, f in FONT_FILES.items():  # embed the real brand fonts so the PDF reports them
+            pg.insert_font(fontname=alias, fontfile=f)
+        sh = pg.new_shape()
         sh.draw_rect(fitz.Rect(0, 0, W, H)); sh.finish(fill=c(BG), color=None)
         if sp["kind"] == "title":  # diagonal coral band
             sh.draw_polyline([(600, -10), (760, -10), (680, 550), (520, 550), (600, -10)]); sh.finish(fill=c(CORAL), color=None)
@@ -117,25 +126,25 @@ def build_pdf(path):
         # footer rule
         sh.draw_line((36, H - 44), (W - 36, H - 44)); sh.finish(color=c(CORAL), width=1)
         sh.commit()
-        pg.insert_text((72, 46), "MERIDIAN", fontsize=13, fontname="tibo", color=c(ICE))  # Times bold ~ serif stand-in
-        pg.insert_text((36, H - 26), FOOTER, fontsize=8, fontname="helv", color=c(MIST))
-        pg.insert_text((W - 36 - 30, H - 26), f"{i} / {total}", fontsize=8, fontname="helv", color=c(MIST))
+        pg.insert_text((72, 46), "MERIDIAN", fontsize=13, fontname="GeorgiaB", color=c(ICE))
+        pg.insert_text((36, H - 26), FOOTER, fontsize=8, fontname="Calibri", color=c(MIST))
+        pg.insert_text((W - 36 - 30, H - 26), f"{i} / {total}", fontsize=8, fontname="Calibri", color=c(MIST))
         if sp["kind"] == "title":
-            pg.insert_text((36, 190), sp["eyebrow"], fontsize=11, fontname="hebo", color=c(GOLD))
-            pg.insert_text((36, 240), sp["title"], fontsize=40, fontname="tibo", color=c(ICE))
-            pg.insert_text((36, 280), sp["sub"], fontsize=16, fontname="heit", color=c(MIST))
+            pg.insert_text((36, 190), sp["eyebrow"], fontsize=11, fontname="CalibriB", color=c(GOLD))
+            pg.insert_text((36, 240), sp["title"], fontsize=40, fontname="GeorgiaB", color=c(ICE))
+            pg.insert_text((36, 280), sp["sub"], fontsize=16, fontname="CalibriI", color=c(MIST))
         else:
-            pg.insert_textbox(fitz.Rect(36, 70, 900, 150), sp["title"], fontsize=26, fontname="tibo", color=c(ICE))
+            pg.insert_textbox(fitz.Rect(36, 70, 900, 150), sp["title"], fontsize=26, fontname="GeorgiaB", color=c(ICE))
             y = 200
             for b in sp["bullets"]:
                 s2 = pg.new_shape(); s2.draw_circle((44, y - 5), 4); s2.finish(fill=c(CORAL), color=None); s2.commit()
-                pg.insert_textbox(fitz.Rect(60, y - 18, 600, y + 40), b, fontsize=14, fontname="helv", color=c(ICE)); y += 60
+                pg.insert_textbox(fitz.Rect(60, y - 18, 600, y + 40), b, fontsize=14, fontname="Calibri", color=c(ICE)); y += 60
             if "kpis" in sp:
                 s3 = pg.new_shape(); s3.draw_rect(fitz.Rect(620, 185, 920, 430)); s3.finish(fill=c(PANEL), color=None); s3.commit()
                 ky = 230
                 for val, lab in sp["kpis"]:
-                    pg.insert_text((640, ky), val, fontsize=24, fontname="tibo", color=c(CORAL))
-                    pg.insert_text((640, ky + 18), lab, fontsize=10, fontname="helv", color=c(MIST)); ky += 75
+                    pg.insert_text((640, ky), val, fontsize=24, fontname="GeorgiaB", color=c(CORAL))
+                    pg.insert_text((640, ky + 18), lab, fontsize=10, fontname="Calibri", color=c(MIST)); ky += 75
     doc.save(path)
 
 
