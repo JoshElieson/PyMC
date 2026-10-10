@@ -201,3 +201,19 @@ Figures are high quality: horizontal bars with 95% whiskers, KPI tiles, three-ca
 
 Artefacts: `probes/before_video/before_daimon_two_slide_deck_no_template.gif` (screen recording,
 36 frames), `before_slide1_in_discord.jpg`, `before_slide2_in_discord.jpg`, `before_thread_overview.png`.
+
+## After run and the "skill not working" report — 2026-10-10 13:45-14:20
+
+- Skills could not be added to the built-in `daimon` agent ("managed by workspace defaults").
+  Daimon forked it into `meridian-analyst`, both skills were added (approval cards), and
+  **only `#daimon` was routed to the new agent**.
+- In `#daimon` the after run worked: brand set once from the Meridian PDF (Flow A, 50s),
+  then the identical two-slide prompt produced a Meridian-branded deck, the `post_wizard`
+  review form appeared, Size -> L was applied, and `✅ Publish PDF` attached
+  `Meridian_channel_revenue_2026-10-10_final.pdf` + `style.json`. (A first publish lost its
+  attachments; the skills were patched to use versioned file names and verify arrival.)
+- In the new channels `#test`, `#run2`, `#pres`, `#testing` the responder is the **stock
+  `daimon` agent** (no skills), so decks came out "in PyMC Labs style". That is a routing
+  gap, not a skill defect: new channels default to the workspace agent.
+- Fix: make `meridian-analyst` the server default agent (or route each channel to it).
+  For a real customer this is a one-time `/agent-setup` choice; the submission should say so.
