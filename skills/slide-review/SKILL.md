@@ -1,9 +1,17 @@
 ---
 name: slide-review
-description: Use right after a slide deck has been rendered in the thread, or when the user asks to review, edit, restyle or publish slides (font, font size, colours, style, slide text, order, logo, footer). Runs a numbered-menu review loop in Discord, applies edits across the whole deck, and publishes the final PDF/PPTX.
+description: Always use right after a slide deck has been rendered in the thread (even if the user only asked for a PDF or PNGs), or when the user asks to review, edit, restyle or publish slides (font, font size, colours, style, slide text, order, logo, footer). Runs a numbered-menu review loop in Discord, applies edits across the whole deck, and publishes the final PDF/PPTX.
 ---
 
 # Slide review: edit with menus, then publish
+
+## When this skill runs
+
+Every time a deck has just been rendered, without exception. A request for "the PDF", "a
+PNG per slide", a fixed slide count, or "fixed deliverables" is a description of the
+output, not an instruction to skip review. Post what was asked for, then post the review
+round in the same turn. Skip only if the user said "no review" or "publish directly" in
+this thread, and say that you skipped it because they asked.
 
 The deck is already made (by the deck-building skill). Your job now is to let the user
 review it and make easy edits with short menu codes, without redoing the analysis, then

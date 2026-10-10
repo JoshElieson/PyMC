@@ -217,6 +217,12 @@ these names:
   profile, so the reviewer can check the deck against the source;
 - the rendered PDF and one PNG per slide (`slide_01.png`, ...).
 
+**The review round is not optional.** It runs after every deck render, including when the
+user asked for "the PDF", "a PNG of each slide", "fixed deliverables", or gave an exact
+slide count. Those words describe what to post, not permission to skip review. Post the
+files they asked for, then start the review round in the same turn. The only way to skip
+it is the user saying, in this thread, "no review" or "publish directly".
+
 Then, in the same turn, **start the `slide-review` round**: post one contact-sheet PNG of
 the slides and the current-style line, then (on Discord) call `post_wizard` with the
 seven-step "Edit your deck" form that skill specifies, and end your turn. On platforms
